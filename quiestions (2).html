@@ -1,0 +1,605 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>quiestions</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: subject cards on a home grid -> quiz opens as a single-column question stage with a sticky progress bar */
+:root{
+  --bg:#eef1f5; --surface:#ffffff; --ink:#131c28; --muted:#5b6778; --line:#d6dce5;
+  --accent:#2b4bff; --accent-ink:#ffffff; --accent-soft:#e3e8ff;
+  --ok:#0e7a4b; --ok-soft:#dcf3e8; --bad:#b4261e; --bad-soft:#fbe4e1;
+  --font-ui:'IBM Plex Sans Arabic',system-ui,'Segoe UI',Tahoma,sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f151e; --surface:#18212d; --ink:#e8edf4; --muted:#93a0b3; --line:#2a3646;
+  --accent:#7d93ff; --accent-ink:#0f151e; --accent-soft:#222c52;
+  --ok:#52d397; --ok-soft:#14352a; --bad:#ff8a80; --bad-soft:#40201e; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f151e; --surface:#18212d; --ink:#e8edf4; --muted:#93a0b3; --line:#2a3646;
+  --accent:#7d93ff; --accent-ink:#0f151e; --accent-soft:#222c52;
+  --ok:#52d397; --ok-soft:#14352a; --bad:#ff8a80; --bad-soft:#40201e; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-ui);font-size:16px;line-height:1.7;
+  padding-block:0 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:720px;margin:0 auto;position:relative;z-index:1}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;display:none}
+#bg.on{display:block}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--font-mono)}
+
+/* top bar */
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:20px 8px}
+.brand{font-weight:700;font-size:15px;color:var(--muted);letter-spacing:.02em}
+.back{background:none;border:1px solid var(--line);border-radius:999px;padding:4px 14px;font-size:14px;color:var(--ink)}
+.back:hover{border-color:var(--accent);color:var(--accent)}
+
+/* home */
+h1{font-size:clamp(28px,6vw,40px);line-height:1.25;margin:28px 0 6px;font-weight:700;text-wrap:balance}
+.lead{color:var(--muted);margin:0 0 28px}
+.subject{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px;display:grid;gap:18px}
+.subject-head{display:flex;gap:16px;align-items:center}
+.sym{flex:none;width:56px;height:56px;border-radius:14px;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-family:var(--font-mono);font-weight:500;font-size:22px;direction:ltr}
+.subject h2{margin:0;font-size:22px;line-height:1.3;direction:ltr;text-align:left}
+.subject .sub{margin:0;color:var(--muted);font-size:14px}
+.quizlist{display:grid;gap:10px}
+.subj-btn{cursor:pointer;display:flex;align-items:center;justify-content:space-between;text-align:left;width:100%;gap:12px}
+.subj-btn:hover{border-color:var(--accent)}
+.subj-btn .h2{display:block;font-size:22px;font-weight:700;line-height:1.3;direction:ltr;text-align:left}
+.subj-btn .sub{display:block}
+#list{display:grid;gap:16px;margin-top:6px}
+.qhead{margin-top:14px}
+.qcard{scroll-margin-top:160px}
+.quizbtn{display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;width:100%;
+  background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.quizbtn:hover{border-color:var(--accent)}
+.quizbtn b{font-family:var(--font-mono);font-weight:500;font-size:18px;direction:ltr}
+.quizbtn span{color:var(--muted);font-size:14px}
+.pill{background:var(--accent-soft);color:var(--accent);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:600;white-space:nowrap}
+
+.hero{margin:clamp(12px,5vh,48px) 0 clamp(28px,6vh,56px);text-align:center;font-size:clamp(32px,9vw,68px);line-height:1.05;font-weight:700;letter-spacing:-.02em;direction:ltr;user-select:none;cursor:default}
+.hero{-webkit-tap-highlight-color:transparent;-webkit-user-select:none}
+.hero .ch{display:inline-block;will-change:transform}
+/* progress */
+.prog{position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);padding-block:10px 12px;z-index:5}
+.prog-top{display:flex;justify-content:space-between;font-size:14px;color:var(--muted);margin-bottom:8px;font-variant-numeric:tabular-nums}
+.track{height:6px;border-radius:99px;background:var(--line);overflow:hidden}
+.fill{height:100%;background:var(--accent);width:0;transition:width .3s}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px;direction:ltr;justify-content:flex-start}
+.dot{min-width:28px;height:28px;border-radius:7px;background:var(--line);color:var(--ink);border:0;padding:0;font-family:var(--font-mono);font-size:12px;font-weight:500;font-variant-numeric:tabular-nums}
+.dot.ok,.dot.bad{color:#fff}
+.dot.ok{background:var(--ok)} .dot.bad{background:var(--bad)}
+.dot.cur{outline:2px solid var(--accent);outline-offset:1px}
+
+.dm{background:none;border:1px solid var(--line);border-radius:999px;padding:0 12px;font-size:12px;line-height:22px;color:var(--ink);font-family:var(--font-mono)}
+.dm:hover{border-color:var(--accent);color:var(--accent)}
+.dots.row{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin}
+.dots.row .dot{flex:none}
+/* question */
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px}
+#final .qcard{margin-top:16px}
+.qnum{font-family:var(--font-mono);font-size:13px;color:var(--muted);direction:ltr;text-align:left;margin-bottom:8px}
+.qtext{direction:ltr;text-align:left;font-size:19px;line-height:1.55;font-weight:500;margin:0 0 20px;overflow-wrap:anywhere}
+.blank{display:inline-block;min-width:3.2em;border-bottom:2px solid var(--accent);margin-inline:3px;transform:translateY(-3px)}
+.opts{display:grid;gap:10px;direction:ltr}
+.opt{display:flex;gap:14px;align-items:center;text-align:left;width:100%;background:var(--bg);
+  border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:17px;overflow-wrap:anywhere}
+.opt .k{flex:none;width:30px;height:30px;border-radius:8px;display:grid;place-items:center;
+  font-family:var(--font-mono);font-size:14px;background:var(--surface);border:1px solid var(--line);font-weight:500}
+.opt:not(:disabled):hover{border-color:var(--accent)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--ok-soft);border-color:var(--ok)}
+.opt.right .k{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.opt.wrong .k{background:var(--bad);border-color:var(--bad);color:var(--surface)}
+.opt.faded{opacity:.55}
+.opt .mark{margin-left:auto;font-size:13px;font-weight:600;font-family:var(--font-ui)}
+.opt.right .mark{color:var(--ok)} .opt.wrong .mark{color:var(--bad)}
+
+/* explanation */
+.explain{margin-top:18px;border-radius:14px;border:1px solid var(--line);background:var(--bg);overflow:hidden}
+.verdict{direction:ltr;padding:12px 18px;font-weight:700;font-size:17px}
+.explain.good .verdict{background:var(--ok-soft);color:var(--ok)}
+.explain.miss .verdict{background:var(--bad-soft);color:var(--bad)}
+.ex-body{padding:6px 18px 16px;display:grid;gap:14px;direction:rtl;text-align:right}
+.ex-body h3{margin:12px 0 2px;font-size:13px;letter-spacing:.04em;color:var(--muted);font-weight:600}
+.ex-body p{margin:0;max-width:62ch}
+.ex-body code,.ex-body bdi{font-family:var(--font-mono);font-size:.92em;background:var(--accent-soft);color:var(--accent);padding:1px 6px;border-radius:5px;direction:ltr;unicode-bidi:isolate}
+.next{margin-top:18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.btn{border:0;border-radius:12px;padding:12px 22px;font-weight:600;background:var(--accent);color:var(--accent-ink);font-size:16px}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.btn:hover{filter:brightness(1.08)}
+
+/* result */
+.score{font-family:var(--font-mono);font-size:64px;line-height:1.1;direction:ltr;font-weight:500;margin:6px 0}
+.review{display:grid;gap:8px;margin-top:20px}
+.rv{display:flex;gap:10px;align-items:flex-start;text-align:left;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px}
+.rv .n{flex:none;font-family:var(--font-mono);width:28px;height:28px;display:grid;place-items:center;border-radius:7px;color:var(--surface);font-size:13px}
+.rv.ok .n{background:var(--ok)} .rv.bad .n{background:var(--bad)}
+.rv span{direction:ltr;text-align:left;flex:1;min-width:0;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){.fill{transition:none}}
+</style>
+
+<canvas id="bg" aria-hidden="true"></canvas>
+<div class="wrap" id="app"></div>
+
+<script>
+const Q = [
+{q:"Standardization is ............... affected by outliers",o:["high","much less","None of Them","more"],a:1,
+ ar:"التوحيد القياسي (Standardization) بيتأثر بالقيم الشاذة (outliers) بدرجة ...............",
+ why:"في <code>Standardization</code> بنطرح المتوسط ونقسم على الانحراف المعياري، ومفيش حد أدنى أو أقصى ثابت للقيم الناتجة. فالقيمة الشاذة بتتحول لرقم كبير بس مش بتضغط باقي البيانات في مدى ضيق، وعشان كده تأثرها بالـ outliers <b>أقل بكتير</b>.",
+ no:"عكسها <code>Min-Max Scaling</code>: القيمة الشاذة بتغيّر الـ min أو الـ max فبتتأثر بيها كل البيانات، وده اللي بيخليها أكتر حساسية."},
+{q:"It gives an idea of how much error the system typically makes in its predictions, with a higher weight for large errors.",o:["RMSE","MESR","MSRE","ESMR"],a:0,
+ ar:"مقياس بيدي فكرة عن مقدار الخطأ اللي بيعمله النظام عادةً في توقعاته، مع إعطاء وزن أكبر للأخطاء الكبيرة.",
+ why:"ده <code>RMSE</code> (جذر متوسط مربع الخطأ). لأنه بيربّع الأخطاء قبل ما ياخد المتوسط، الخطأ الكبير بيتضخم أكتر من الخطأ الصغير، فبياخد وزن أعلى.",
+ no:"باقي الاختيارات (MESR, MSRE, ESMR) مجرد حروف مخلوطة ومش مقاييس موجودة."},
+{q:"housing.tgz contains ............... file called housing.csv with all the data.",o:["comma-separated values","docs","None of Them","xls"],a:0,
+ ar:"الملف المضغوط housing.tgz بيحتوي على ملف اسمه housing.csv فيه كل البيانات. الـ csv ده ملف من نوع ...............",
+ why:"امتداد <code>.csv</code> اختصار <b>Comma-Separated Values</b> يعني قيم مفصولة بفاصلة. هو ملف نصي بسيط وكل سطر فيه صف بيانات، وده الشكل الأشهر لبيانات الـ Machine Learning.",
+ no:"<code>docs</code> و <code>xls</code> صيغ مختلفة (Word وExcel) وملف housing.csv مش منهم."},
+{q:"The correlation coefficient when it is close to -1, it means that there is a strong ...............correlation.",o:["None of Them","positive","negative","equal"],a:2,
+ ar:"معامل الارتباط لما يكون قريب من -1 معناه إن فيه ارتباط قوي ...............",
+ why:"القيمة القريبة من <code>-1</code> معناها ارتباط <b>سلبي (negative)</b> قوي: لما متغير يزيد التاني بيقل تقريباً بشكل ثابت. مثال: كل ما سرعة العربية تزيد، الزمن اللي بياخده المشوار يقل.",
+ no:"الارتباط الموجب (positive) بيكون قريب من <code>+1</code>، مش من -1."},
+{q:"It will use cross-validation to evaluate all the possible combinations of hyperparameter values.",o:["None of Them","Grid Search","Both of Them","Randomized Search"],a:1,
+ ar:"أسلوب بيستخدم الـ cross-validation لتقييم كل التركيبات الممكنة من قيم الـ hyperparameters.",
+ why:"<code>Grid Search</code> (مثل <code>GridSearchCV</code>) بيجرّب <b>كل</b> التركيبات الممكنة في الشبكة اللي حددتها، ويقيّم كل واحدة بالـ cross-validation، وبعدها يختار الأفضل.",
+ no:"<code>Randomized Search</code> مش بيجرّب كله، بيجرّب عدد محدد من التركيبات العشوائية بس."},
+{q:"Computing the MAE corresponds to the l1 norm, noted ||.||1. This is sometimes called the Euclidean norm.",o:["true","false"],a:1,
+ ar:"حساب الـ MAE بيقابل المعيار l1 ورمزه ||.||1، وده أحياناً بيتسمى المعيار الإقليدي (Euclidean).",
+ why:"العبارة <b>خاطئة</b>. الـ <code>l1 norm</code> اسمه <b>Manhattan norm</b>، وهو اللي بيقابل <code>MAE</code>. أما <b>Euclidean norm</b> فهو الـ <code>l2 norm</code> وبيقابل <code>RMSE</code>.",
+ no:"الغلط في كلمة Euclidean بس. باقي الجملة (MAE = l1) صحيحة."},
+{q:"RMSE(X, h), h is the system’s prediction function, also called a ...........",o:["number of instances in the dataset","a vector of all the feature values","hypothesis","None of Them"],a:2,
+ ar:"في الصيغة RMSE(X, h)، الرمز h هو دالة التنبؤ بتاعة النظام، وبتتسمى كمان ...........",
+ why:"الدالة <code>h</code> اللي بتاخد الـ features وتطلّع التوقع اسمها <b>hypothesis</b> (الفرضية).",
+ no:"عدد الأمثلة في الـ dataset رمزه <code>m</code>، والمتجه اللي فيه قيم كل الـ features لمثال واحد رمزه <code>x</code>."},
+{q:"Most ML algorithms prefer to work with ............",o:["text","None of Them","images","numbers"],a:3,
+ ar:"معظم خوارزميات الـ Machine Learning بتفضّل تشتغل مع ............",
+ why:"الخوارزميات بتعمل حسابات رياضية، فبتشتغل أحسن مع <b>الأرقام (numbers)</b>. عشان كده بنحوّل النصوص والفئات لأرقام قبل التدريب، زي ما بيعمل <code>OneHotEncoder</code>.",
+ no:"النصوص والصور لازم تتحول لأرقام الأول."},
+{q:"Scikit-Learn provides a transformer called .................. for standardization.",o:["StandardScaler","SimpleImputer","OneHotEncoder","MinMaxScaler"],a:0,
+ ar:"مكتبة Scikit-Learn بتوفر transformer اسمه .................. لعملية الـ standardization.",
+ why:"<code>StandardScaler</code> هو اللي بيعمل standardization: بيطرح المتوسط ويقسم على الانحراف المعياري فتبقى القيم متوسطها 0 وانحرافها 1.",
+ no:"<code>SimpleImputer</code> للقيم الناقصة، <code>OneHotEncoder</code> للفئات، <code>MinMaxScaler</code> للـ normalization."},
+{q:"Computing the ........... corresponds to the l1 norm, noted ||.||1. This is sometimes called the Manhattan norm.",o:["RMSE","MESR","MAE","ESMR"],a:2,
+ ar:"حساب الـ ........... بيقابل المعيار l1، وبيتسمى أحياناً معيار مانهاتن (Manhattan).",
+ why:"<code>MAE</code> (متوسط الخطأ المطلق) بيجمع القيم المطلقة للأخطاء، وده تعريف الـ <code>l1 norm</code> أو Manhattan norm.",
+ no:"<code>RMSE</code> بيقابل l2 (Euclidean)، والباقي مش مقاييس حقيقية."},
+{q:"Scikit-Learn provides a ..................... class to convert categorical values into one-hot vectors.",o:["None of Them","MinMaxScaler","OneHotEncoder","StandardScaler"],a:2,
+ ar:"مكتبة Scikit-Learn بتوفر كلاس اسمه ..................... لتحويل القيم الفئوية (categorical) إلى متجهات one-hot.",
+ why:"اسم الكلاس بيقول وظيفته: <code>OneHotEncoder</code> بيحوّل كل فئة لمتجه كله أصفار ما عدا خانة واحدة فيها 1.",
+ no:"<code>MinMaxScaler</code> و <code>StandardScaler</code> بيغيروا مقياس الأرقام ومالهمش علاقة بالفئات."},
+{q:"To get information about dataset, in python we use..........method.",o:[".details()",".information()","None of Them",".info()"],a:3,
+ ar:"للحصول على معلومات عن الـ dataset في بايثون بنستخدم الدالة ..........",
+ why:"<code>.info()</code> في pandas بتعرض عدد الصفوف وأسماء الأعمدة ونوع كل عمود وعدد القيم غير الفارغة، يعني ملخص سريع لهيكل البيانات.",
+ no:"<code>.details()</code> و <code>.information()</code> مش موجودين في pandas."},
+{q:"The correlation coefficient ranges from ...............",o:["0 to 1","1 to 2","–1 to 1","None of Them"],a:2,
+ ar:"معامل الارتباط قيمته بتتراوح من ...............",
+ why:"معامل الارتباط دايماً بين <code>-1</code> و <code>+1</code>. القيمة <code>-1</code> ارتباط سلبي كامل، و <code>+1</code> ارتباط موجب كامل، و <code>0</code> يعني مفيش ارتباط خطي.",
+ no:"<code>0 to 1</code> ناقصة لأنها بتتجاهل الارتباط السلبي."},
+{q:"Computing the RMSE corresponds to the Euclidean norm. It is also called the l2 norm, noted ||.||2 (or just ||.||).",o:["false","true"],a:1,
+ ar:"حساب الـ RMSE بيقابل المعيار الإقليدي (Euclidean)، وبيتسمى كمان l2 norm ورمزه ||.||2 (أو ||.|| بس).",
+ why:"العبارة <b>صحيحة</b>. <code>RMSE</code> = <code>l2 norm</code> = Euclidean norm، لأنه بيحسب المسافة العادية (جذر مجموع المربعات).",
+ no:"قارن بـ <code>MAE</code> اللي بيقابل l1 (Manhattan)."},
+{q:"A typical performance measure for regression problems is the...........",o:["MSRE","MESR","ESMR","RMSE"],a:3,
+ ar:"مقياس الأداء المعتاد لمسائل الـ regression هو ...........",
+ why:"مسائل الـ regression بتتوقع قيمة رقمية، فبنقيس الأداء بـ <code>RMSE</code> (جذر متوسط مربع الخطأ). كل ما قلّ كان النموذج أحسن.",
+ no:"الاختيارات التانية حروف RMSE مرتبة غلط."},
+{q:"To get summary of each numerical attribute in dataset, in python we use......method.",o:[".describe()",".head()",".info()",".shape()"],a:0,
+ ar:"للحصول على ملخص لكل عمود رقمي في الـ dataset في بايثون بنستخدم الدالة ......",
+ why:"<code>.describe()</code> بتطلّع إحصائيات لكل عمود رقمي: العدد (count) والمتوسط (mean) والانحراف المعياري (std) وأقل وأكبر قيمة والـ quartiles.",
+ no:"<code>.head()</code> بتعرض أول صفوف بس، <code>.info()</code> بتعرض الأنواع وعدد القيم غير الفارغة، <code>.shape</code> بترجع عدد الصفوف والأعمدة."},
+{q:"ML algorithms don’t perform well when the input numerical attributes have very.........scales.",o:["different","Same","None of Them","Equal"],a:0,
+ ar:"خوارزميات الـ ML مبتشتغلش كويس لما الـ attributes الرقمية بتبقى ليها مقاييس (scales) .........",
+ why:"لو عمود مداه من 0 لـ 1 وعمود تاني من 0 لـ 1,000,000، العمود الكبير بيسيطر على الحسابات. عشان كده المقاييس <b>المختلفة (different)</b> مشكلة بنحلها بـ feature scaling.",
+ no:"لو المقاييس متساوية فمفيش مشكلة أصلاً."},
+{q:"Both the ........ and the.........are ways to measure the distance between two vectors",o:["RMSE, MAE","None of Them","RMSE,ESMR","MAE, MESR"],a:0,
+ ar:"كل من ........ و ......... طرق لقياس المسافة بين متجهين (vectors).",
+ why:"<code>RMSE</code> (المسافة الإقليدية l2) و <code>MAE</code> (مسافة مانهاتن l1) بيقيسوا المسافة بين متجه التوقعات ومتجه القيم الحقيقية.",
+ no:"<code>ESMR</code> و <code>MESR</code> مش مقاييس موجودة."},
+{q:"The.......... the norm index, the ........ it focuses on large values and neglects small ones.",o:["higher,little","lower,little","higher,more","lower,more"],a:2,
+ ar:"كل ما .......... رقم المعيار (norm index)، كل ما .......... ركّز على القيم الكبيرة وأهمل الصغيرة.",
+ why:"كل ما رقم الـ norm <b>زاد (higher)</b> زاد تركيزه على القيم الكبيرة (<b>more</b>) وقلّ اهتمامه بالصغيرة. عشان كده <code>RMSE</code> (l2) أكتر حساسية للقيم الشاذة من <code>MAE</code> (l1).",
+ no:"لو الـ index قل فالتركيز على القيم الكبيرة بيقل، مش بيزيد."},
+{q:"The common way to get all attributes to have the same scale...........",o:["standardization","min-max scaling","None of Them","Both of Them"],a:3,
+ ar:"الطريقة الشائعة لجعل كل الـ attributes ليها نفس المقياس هي ...........",
+ why:"فيه طريقتين شائعتين: <code>min-max scaling</code> (normalization) و <code>standardization</code>. الاتنين بيوحّدوا المقياس، فالإجابة <b>Both of Them</b>.",
+ no:"اختيار واحد منهم بس ناقص لأن التاني برضه صح."},
+{q:"Instead of trying out all possible combinations, it evaluates a given number of random combinations",o:["Grid Search","None of Them","Randomized Search","Both of Them"],a:2,
+ ar:"بدل ما يجرّب كل التركيبات الممكنة، بيقيّم عدد محدد من التركيبات العشوائية.",
+ why:"<code>Randomized Search</code> (مثل <code>RandomizedSearchCV</code>) بيجرّب عدد معين من التركيبات العشوائية. مفيد جداً لما مساحة البحث كبيرة والـ Grid Search هياخد وقت طويل.",
+ no:"<code>Grid Search</code> بيجرّب كل التركيبات."},
+{q:"Scikit-Learn provides a OneHotEncoder class to convert categorical values into.......... vectors.",o:["None of Them","one-hot","Two-hot","Three-hot"],a:1,
+ ar:"مكتبة Scikit-Learn بتوفر كلاس OneHotEncoder لتحويل القيم الفئوية إلى متجهات ..........",
+ why:"الاسم نفسه بيقول: متجهات <b>one-hot</b>، يعني خانة واحدة بس فيها 1 (hot) والباقي أصفار.",
+ no:"Two-hot و Three-hot مش موجودين."},
+{q:"Coefficients close to 0 mean that there is ..............",o:["strong positive correlation","no linear correlation.","None of Them","strong negative correlation"],a:1,
+ ar:"المعاملات القريبة من 0 معناها إن فيه ..............",
+ why:"معامل الارتباط القريب من <code>0</code> يعني <b>مفيش ارتباط خطي (no linear correlation)</b> بين المتغيرين. ممكن يكون بينهم علاقة غير خطية، بس المعامل مش بيكتشفها.",
+ no:"الارتباط القوي (موجب أو سلبي) بيكون قريب من +1 أو -1."},
+{q:"Scikit-Learn provides a handy class to take care of missing values which is called.....…...........",o:["SimpleImputer","None of Them","MinMaxScaler","OneHotEncoder"],a:0,
+ ar:"مكتبة Scikit-Learn بتوفر كلاس مفيد للتعامل مع القيم الناقصة (missing values) اسمه ...............",
+ why:"<code>SimpleImputer</code> بيعوّض القيم الناقصة بقيمة مناسبة زي المتوسط (mean) أو الوسيط (median) أو القيمة الأكثر تكراراً.",
+ no:"<code>MinMaxScaler</code> للتحجيم و <code>OneHotEncoder</code> للفئات."},
+{q:"Computing the .......... corresponds to the Euclidean norm. It is also called the l2 norm",o:["ESMR","MEA","MSRE","RMSE"],a:3,
+ ar:"حساب الـ .......... بيقابل المعيار الإقليدي، وبيتسمى كمان l2 norm.",
+ why:"<code>RMSE</code> هو اللي بيقابل <code>l2 norm</code> أو Euclidean norm.",
+ no:"<code>MAE</code> هو اللي بيقابل l1، والباقي مش مقاييس موجودة."},
+{q:"Pipelines are very common in ML systems, since there is a lot of data to manipulate.",o:["true","false"],a:0,
+ ar:"الـ Pipelines شائعة جداً في أنظمة الـ ML، لأن فيه بيانات كتير لازم نعالجها.",
+ why:"العبارة <b>صحيحة</b>. الـ <code>Pipeline</code> بيربط خطوات المعالجة (ملء القيم الناقصة، التحجيم، الترميز...) في سلسلة واحدة منظمة وبتتنفذ بالترتيب، وده بيوفر وقت وبيمنع أخطاء.",
+ no:""},
+{q:"The correlation coefficient when it is close to 1, it means that there is a strong......... correlation.",o:["positive","negative","equal","None of Them"],a:0,
+ ar:"معامل الارتباط لما يكون قريب من 1 معناه إن فيه ارتباط قوي .........",
+ why:"القيمة القريبة من <code>+1</code> يعني ارتباط <b>موجب (positive)</b> قوي: لما متغير يزيد التاني بيزيد معاه.",
+ no:"السلبي (negative) بيكون قريب من -1."},
+{q:"In Min-max Scaling ,values are shifted and rescaled so that they end up ranging from...............",o:["–1 to 1","0 to 2","0 to 1","None of Them"],a:2,
+ ar:"في الـ Min-max Scaling بتتم إزاحة القيم وإعادة تحجيمها عشان تبقى في المدى من ...............",
+ why:"الـ Min-max scaling بيطرح أقل قيمة ويقسم على (الأكبر − الأقل)، فالنتيجة دايماً بين <code>0</code> و <code>1</code>.",
+ no:"المدى <code>-1 to 1</code> مش هو الافتراضي في MinMaxScaler."},
+{q:"If e the dataset is not too large, you can easily compute the standard correlation coefficient between every pair of attributes using the .............. method.",o:["info()","tail()","corr()","head()"],a:2,
+ ar:"لو الـ dataset مش كبيرة قوي، تقدر بسهولة تحسب معامل الارتباط القياسي بين كل زوج من الـ attributes باستخدام الدالة ..............",
+ why:"<code>corr()</code> في pandas بتحسب مصفوفة الارتباط بين كل أعمدة الـ DataFrame الرقمية مرة واحدة.",
+ no:"<code>info()</code> للمعلومات، و <code>head()</code> و <code>tail()</code> لعرض أول وآخر الصفوف."},
+{q:"Scikit-Learn provides a transformer called.............. for normalization",o:["MinMaxScaler","None of Them","SimpleImputer","OneHotEncoder"],a:0,
+ ar:"مكتبة Scikit-Learn بتوفر transformer اسمه .............. لعملية الـ normalization.",
+ why:"<code>MinMaxScaler</code> هو اللي بيعمل normalization، يعني بيحجّم القيم لتكون بين 0 و 1 (المدى بيتعدل بالـ <code>feature_range</code> لو عايز).",
+ no:"<code>StandardScaler</code> للـ standardization، و <code>SimpleImputer</code> للقيم الناقصة، و <code>OneHotEncoder</code> للفئات."}
+];
+
+/* helpers: T = true/false question, M = multiple choice */
+const T=(q,a,ar,why,no='')=>({q,o:["true","false"],a:a?0:1,ar,why,no});
+const M=(q,o,a,ar,why,no='')=>({q,o,a,ar,why,no});
+
+const Q2=[
+T("The common ways to get all attributes to have the same scale: min-max scaling and standardization",1,"الطرق الشائعة لجعل كل الـ attributes ليها نفس المقياس: min-max scaling و standardization.","العبارة <b>صحيحة</b>. الطريقتين دول هما أشهر طرق الـ feature scaling: <code>MinMaxScaler</code> بيحجّم القيم بين 0 و 1، و <code>StandardScaler</code> بيخلّي المتوسط 0 والانحراف المعياري 1."),
+T("Pipelines is a sequence of data processing components.",1,"الـ Pipeline هو سلسلة من مكوّنات معالجة البيانات.","العبارة <b>صحيحة</b>. الـ <code>Pipeline</code> بيربط خطوات المعالجة (ملء الناقص، التحجيم، الترميز...) ورا بعض، وكل خطوة بتاخد ناتج اللي قبلها."),
+T("The correlation coefficient when it is close to -1, it means that there is a strong positive correlation.",0,"معامل الارتباط لما يكون قريب من -1 معناه إن فيه ارتباط قوي موجب (positive).","العبارة <b>خاطئة</b>. القريب من <code>-1</code> معناه ارتباط <b>سلبي (negative)</b> قوي، يعني لما متغير يزيد التاني بيقل. الموجب بيكون قريب من <code>+1</code>."),
+T("Building a model on top of many other models is called Ensemble Learning.",1,"بناء نموذج فوق مجموعة نماذج تانية بيتسمى Ensemble Learning.","العبارة <b>صحيحة</b>. الـ <code>Ensemble Learning</code> بيجمع تنبؤات نماذج كتير عشان يطلع نتيجة أدق من أي نموذج لوحده، زي الـ Random Forest."),
+T("The higher the norm index, the more it focuses on large values and neglects small ones.",1,"كل ما رقم المعيار (norm index) زاد، زاد تركيزه على القيم الكبيرة وأهمل الصغيرة.","العبارة <b>صحيحة</b>. عشان كده <code>RMSE</code> (l2) أكتر حساسية للقيم الكبيرة والشاذة من <code>MAE</code> (l1)."),
+T("The correlation coefficient ranges from –2 to 0.",0,"معامل الارتباط قيمته بتتراوح من -2 إلى 0.","العبارة <b>خاطئة</b>. معامل الارتباط دايماً بين <code>-1</code> و <code>+1</code>."),
+T("In Min-max Scaling, values are shifted and rescaled so that they end up ranging from 0 to 1.",1,"في الـ Min-max Scaling بتتم إزاحة القيم وإعادة تحجيمها لتصبح بين 0 و 1.","العبارة <b>صحيحة</b>. بنطرح أقل قيمة ونقسم على (الأكبر − الأقل) فالنتيجة بين <code>0</code> و <code>1</code>."),
+T("Scikit-Learn provides a handy class to take care of missing values: SimpleImputer.",1,"مكتبة Scikit-Learn بتوفر كلاس مفيد للتعامل مع القيم الناقصة: SimpleImputer.","العبارة <b>صحيحة</b>. <code>SimpleImputer</code> بيعوّض القيم الناقصة بالمتوسط أو الوسيط أو القيمة الأكثر تكراراً."),
+T("RMSE(X, h) is the cost function measured on the set of examples using your hypothesis h.",1,"الـ RMSE(X, h) هي دالة التكلفة (cost function) المحسوبة على مجموعة الأمثلة باستخدام الفرضية h.","العبارة <b>صحيحة</b>. <code>X</code> هي مصفوفة كل الأمثلة و <code>h</code> هي الـ hypothesis (دالة التنبؤ)، والناتج هو متوسط الخطأ بتاع النموذج."),
+T("Both the RMSE and the MAE are ways to measure the distance between the vector of predictions and the vector of target values.",1,"كل من RMSE و MAE طرق لقياس المسافة بين متجه التوقعات ومتجه القيم الحقيقية.","العبارة <b>صحيحة</b>. <code>RMSE</code> هو المسافة الإقليدية (l2) و <code>MAE</code> هو مسافة مانهاتن (l1)."),
+T("Computing the RMSE corresponds to the Manhattan norm. It is also called the l2 norm, noted ||.||2 (or just ||.||).",0,"حساب الـ RMSE بيقابل معيار مانهاتن (Manhattan)، وبيتسمى كمان l2 norm.","العبارة <b>خاطئة</b>. <code>RMSE</code> بيقابل <b>Euclidean norm</b> (l2). أما <b>Manhattan norm</b> فهو l1 وبيقابل <code>MAE</code>."),
+T("Coefficients close to 0 mean that there is no linear correlation.",1,"المعاملات القريبة من 0 معناها إن مفيش ارتباط خطي.","العبارة <b>صحيحة</b>. القريب من <code>0</code> يعني مفيش علاقة خطية بين المتغيرين."),
+T("In Min-max Scaling, values are shifted and rescaled so that they end up ranging from –1 to 1.",0,"في الـ Min-max Scaling القيم بتبقى في المدى من -1 إلى 1.","العبارة <b>خاطئة</b>. المدى الافتراضي للـ Min-max Scaling هو من <code>0</code> إلى <code>1</code>."),
+T("Random Forests work by training many Decision Trees on random subsets of the features.",1,"الـ Random Forests بتشتغل بتدريب عدد كبير من الـ Decision Trees على مجموعات فرعية عشوائية من الـ features.","العبارة <b>صحيحة</b>. كل شجرة بتتدرب على جزء عشوائي، وبعدين بياخد متوسط تنبؤاتهم أو تصويتهم، وده بيقلل الـ overfitting."),
+T("Coefficients close to 1 mean that there is no linear correlation.",0,"المعاملات القريبة من 1 معناها إن مفيش ارتباط خطي.","العبارة <b>خاطئة</b>. القريب من <code>1</code> معناه ارتباط موجب قوي. عدم الارتباط الخطي هو القريب من <code>0</code>."),
+T("RMSE(X, h), X is the number of instances in the dataset.",0,"في RMSE(X, h) الرمز X هو عدد الأمثلة في الـ dataset.","العبارة <b>خاطئة</b>. <code>X</code> هي مصفوفة (matrix) فيها قيم الـ features لكل الأمثلة. أما عدد الأمثلة فرمزه <code>m</code>."),
+T("Standardization bound values to a specific range.",0,"الـ Standardization بيحصر القيم في مدى محدد.","العبارة <b>خاطئة</b>. الـ Standardization مش بيحدد مدى ثابت. اللي بيحصر القيم بين 0 و 1 هو <code>Min-max Scaling</code>."),
+T("With few exceptions, ML algorithms don't perform well when the input numerical attributes have very different scales.",1,"مع استثناءات قليلة، خوارزميات الـ ML مبتشتغلش كويس لما الـ attributes الرقمية مقاييسها مختلفة جداً.","العبارة <b>صحيحة</b>. العمود ذو القيم الكبيرة بيسيطر على الحسابات، عشان كده بنعمل feature scaling."),
+T("To convert categories from text to numbers, we can use Scikit-Learn's OrdinalEncoder class.",1,"لتحويل الفئات من نص لأرقام نقدر نستخدم كلاس OrdinalEncoder.","العبارة <b>صحيحة</b>. <code>OrdinalEncoder</code> بيحوّل كل فئة لرقم صحيح (0, 1, 2...). مناسب لما الفئات ليها ترتيب."),
+T("The correlation coefficient when it is close to 1, it means that there is a strong negative correlation.",0,"معامل الارتباط لما يكون قريب من 1 معناه ارتباط قوي سلبي.","العبارة <b>خاطئة</b>. القريب من <code>+1</code> معناه ارتباط <b>موجب</b> قوي. السلبي بيكون قريب من <code>-1</code>."),
+T("Standardization is much less affected by outliers.",1,"الـ Standardization بيتأثر بالقيم الشاذة بدرجة أقل بكتير.","العبارة <b>صحيحة</b>. بيطرح المتوسط ويقسم على الانحراف المعياري ومفيش مدى ثابت، فالقيمة الشاذة مش بتضغط باقي البيانات زي ما بيحصل في Min-max."),
+T("Scikit-Learn provides a transformer called MinMaxScaler for normalization.",1,"Scikit-Learn بتوفر transformer اسمه MinMaxScaler لعملية الـ normalization.","العبارة <b>صحيحة</b>. <code>MinMaxScaler</code> هو اللي بيحجّم القيم بين 0 و 1."),
+T("The correlation coefficient when it is close to -1, it means that there is a strong negative correlation.",1,"معامل الارتباط لما يكون قريب من -1 معناه ارتباط قوي سلبي.","العبارة <b>صحيحة</b>. لما متغير يزيد التاني بيقل تقريباً بشكل ثابت."),
+T("Scikit-Learn provides a transformer called StandardScaler for standardization.",1,"Scikit-Learn بتوفر transformer اسمه StandardScaler لعملية الـ standardization.","العبارة <b>صحيحة</b>. <code>StandardScaler</code> بيخلّي المتوسط 0 والانحراف المعياري 1."),
+T("The correlation coefficient ranges from –1 to 1.",1,"معامل الارتباط قيمته بتتراوح من -1 إلى 1.","العبارة <b>صحيحة</b>. <code>-1</code> ارتباط سلبي كامل، <code>+1</code> ارتباط موجب كامل، <code>0</code> مفيش ارتباط خطي."),
+T("If the training set is very large, you may want to sample an exploration set, to make manipulations easy and fast.",1,"لو الـ training set كبيرة جداً، ممكن تاخد عينة منها كـ exploration set عشان تسهّل وتسرّع التعامل معاها.","العبارة <b>صحيحة</b>. استكشاف البيانات على عينة صغيرة أسرع بكتير من التعامل مع كل البيانات."),
+T("The correlation coefficient when it is close to 1, it means that there is a strong positive correlation.",1,"معامل الارتباط لما يكون قريب من 1 معناه ارتباط قوي موجب.","العبارة <b>صحيحة</b>. لما متغير يزيد التاني بيزيد معاه."),
+T("Scikit-Learn provides a OneHotEncoder class to convert categorical values into one-hot vectors.",1,"Scikit-Learn بتوفر كلاس OneHotEncoder لتحويل القيم الفئوية لمتجهات one-hot.","العبارة <b>صحيحة</b>. كل فئة بتتحول لمتجه فيه 1 واحد والباقي أصفار."),
+T("To get the data you need to have Python installed.",1,"عشان تجيب البيانات لازم يكون بايثون متسطب عندك.","العبارة <b>صحيحة</b> في سياق الكورس، لأن تحميل البيانات ومعالجتها بيتم بكود بايثون ومكتبات زي pandas و Scikit-Learn."),
+T("Most ML algorithms prefer to work with numbers.",1,"معظم خوارزميات الـ ML بتفضّل تشتغل مع الأرقام.","العبارة <b>صحيحة</b>. عشان كده بنحوّل النصوص والفئات لأرقام قبل التدريب.")
+];
+
+const Q3=[
+M("................represents the correlation between the observed and predicted classifications.",["Matthews Correlation Coefficient","Youden's Index","F-measure","none of them"],0,"................ بيمثّل الارتباط بين التصنيفات الفعلية (observed) والمتوقعة (predicted).","ده <code>MCC</code> (Matthews Correlation Coefficient). قيمته بين -1 و +1، و +1 معناها تنبؤ مثالي."),
+M("................defined as a ratio between the correctly classified samples to the total number of samples.",["Accuracy (ACC)","Error Rate","Sensitivity","Specificity"],0,"................ هو النسبة بين العينات المصنّفة صح وإجمالي عدد العينات.","ده الـ <code>Accuracy</code> = (TP + TN) / الكل.","<code>Error Rate</code> عكسه (المصنّف غلط)، و Sensitivity و Specificity بيقيسوا كل فئة لوحدها."),
+M("................performs K-fold cross-validation and return the evaluation scores",["cross_val_score()","cross_val_predict()","cross_test_predict()","none of them"],0,"................ بتنفذ K-fold cross-validation وترجّع درجات التقييم.","<code>cross_val_score()</code> بترجّع قيمة تقييم (score) لكل fold.","<code>cross_val_predict()</code> بترجّع التوقعات مش الدرجات، و <code>cross_test_predict</code> مش موجودة."),
+M("SGD well suited for ........... learning",["batch","online","all of them","none of them"],1,"الـ SGD مناسب لنوع التعلّم ...........","<code>SGD</code> بيعالج الأمثلة واحد واحد بشكل مستقل، فهو مناسب جداً لـ <b>online learning</b> وللبيانات الكبيرة."),
+M("...................evaluates the discriminative power of the test",["YI","MCC","DSC","none of them"],0,"................... بيقيّم القدرة التمييزية للاختبار.","ده <code>YI</code> (Youden's Index). بيقيس قدرة الاختبار على التمييز بين الفئتين."),
+M("Youden's Index (YI) = ........................",["TPR + TNR − 1","TPR + TNR + 1","TPR + NPV − 1","TPR + PPV − 1"],0,"مؤشر يودن (Youden's Index) = ........................","<code>YI = TPR + TNR − 1</code> يعني Sensitivity + Specificity − 1."),
+M("...............is the inverse precision.",["Negative Predictive Value","Positive Prediction Value","True Negative Rate","none of them"],0,"............... هو عكس الـ precision.","<code>NPV</code> هو نفس فكرة Precision لكن على الفئة السالبة: TN / (TN + FN).","Precision هو PPV على الفئة الموجبة."),
+M("Which of the following is NOT a type of classification problem",["Regression","Binary classification","Multi-class classification","none of them"],0,"أي من الآتي ليس نوعاً من مسائل التصنيف؟","<b>Regression</b> بيتوقع قيمة رقمية مستمرة، فمش تصنيف. الـ Binary والـ Multi-class الاتنين تصنيف."),
+M("................ represents the positive correctly classified samples to the total number of positive samples.",["all of them","True Positive Rate","Hit Rate","Recall"],0,"................ يمثّل العينات الموجبة المصنّفة صح إلى إجمالي العينات الموجبة.","<code>TPR</code> و <code>Hit Rate</code> و <code>Recall</code> هما نفس المقياس بأسماء مختلفة، فالإجابة <b>all of them</b>."),
+M("...................represents the ratio of the correctly classified negative samples to the total number of negative samples",["Specificity","True Negative Rate","both of them","none of them"],2,"................... يمثّل نسبة العينات السالبة المصنّفة صح إلى إجمالي العينات السالبة.","<code>Specificity</code> و <code>True Negative Rate</code> اسمين لنفس المقياس = TN / (TN + FP)."),
+M("...............represents the proportion of positive samples that were correctly classified to the total number of positive predicted samples.",["Positive Prediction Value","Precision","both of them","none of them"],2,"................ يمثّل نسبة العينات الموجبة المصنّفة صح إلى إجمالي العينات اللي النموذج توقّعها موجبة.","<code>PPV</code> و <code>Precision</code> نفس المقياس = TP / (TP + FP)."),
+T("The higher the recall (TPR), the more false positives (FPR) the classifier produces.",1,"كل ما زاد الـ recall (TPR)، زادت الـ false positives (FPR) اللي بيطلّعها المصنّف.","العبارة <b>صحيحة</b>. زيادة الـ recall غالباً بتيجي بإنك تصنّف عينات أكتر كموجبة فتزيد معاها الإيجابيات الكاذبة. وده واضح في منحنى <code>ROC</code>."),
+M("MNIST Dataset is a set of small images of ................. by high school students and employees of the US Census Bureau.",["digits handwritten","letters handwritten","words handwritten","none of them"],0,"MNIST هي مجموعة صور صغيرة لـ ................. كتبها طلاب ثانوي وموظفو مكتب الإحصاء الأمريكي.","<code>MNIST</code> فيها صور <b>أرقام مكتوبة بخط اليد</b> من 0 لـ 9."),
+M("What is the difference between a binary classification algorithm and a multiclass classification algorithm",["A binary classification algorithm can only predict two classes, while a multiclass classification algorithm can predict three or more classes.","A binary classification algorithm is more accurate than a multiclass classification algorithm.","A binary classification algorithm is more computationally expensive than a multiclass classification algorithm.","A binary classification algorithm is not as flexible as a multiclass classification algorithm."],0,"إيه الفرق بين خوارزمية التصنيف الثنائي (binary) والتصنيف المتعدد (multiclass)؟","الفرق في عدد الفئات: الـ <b>binary</b> بيتوقع فئتين بس (زي spam / not spam)، والـ <b>multiclass</b> بيتوقع 3 فئات أو أكتر.","باقي الاختيارات بتقارن الدقة والتكلفة والمرونة، وده مش الفرق الأساسي بينهم."),
+T("Increasing precision reduces recall, and vice versa. This is called the precision/recall trade-off",1,"زيادة الـ precision بتقلل الـ recall والعكس. وده بيتسمى precision/recall trade-off.","العبارة <b>صحيحة</b>. لما ترفع الـ threshold النموذج بيبقى أدق في اللي بيقوله موجب (precision أعلى) لكنه بيفوّت موجبات كتير (recall أقل)."),
+M("................ provides many helper functions to download popular datasets",["Scikit-Learn","keras","pandas","tensorflow"],0,"................ بتوفر دوال مساعدة كتير لتحميل الـ datasets الشهيرة.","<code>Scikit-Learn</code> فيها دوال زي <code>fetch_openml</code> لتحميل datasets مثل MNIST."),
+T("in MNIST Dataset, The test set is already shuffled",0,"في MNIST، الـ test set متخلّطة (shuffled) بالفعل.","العبارة <b>خاطئة</b> حسب الإجابة المعتمدة. الـ dataset متقسمة لـ training set (أول 60,000) و test set (آخر 10,000). المضمون في الكتاب إن الـ <b>training set</b> هي اللي متخلّطة مسبقاً."),
+M("..................performs K-fold cross-validation and returns the predictions made on each test fold",["cross_val_predict()","cross_val_score()","cross_test_predict()","none of them"],0,"................... بتنفذ K-fold cross-validation وترجّع التوقعات اللي اتعملت على كل test fold.","<code>cross_val_predict()</code> بترجّع التوقعات نفسها، مش درجات التقييم."),
+M("Which of the following is TRUE about the StratifiedKFold class",["all of them","It is a cross-validation method that is specifically designed for classification problems","It produces folds that contain a representative ratio of each class in the dataset","It can be used to improve the performance of machine learning models on imbalanced datasets"],0,"أي من الآتي صحيح عن كلاس StratifiedKFold؟","كل العبارات صحيحة: هو طريقة cross-validation مصممة للتصنيف، وبيعمل folds فيها نسبة كل فئة ممثلة صح، وبيفيد مع البيانات غير المتوازنة. فالإجابة <b>all of them</b>."),
+M("in MNIST Dataset, Each image is ............ pixels.",["28 × 28","30 × 30","32 × 32","none of them"],0,"في MNIST كل صورة حجمها ............ بكسل.","كل صورة <b>28 × 28 = 784</b> بكسل، وكل بكسل شدته من 0 (أبيض) لـ 255 (أسود)."),
+M("................ represents the number of misclassified samples from both positive and negative classes",["Error Rate (ERR)","Accuracy (ACC)","Sensitivity","Specificity"],0,"................ يمثّل عدد العينات المصنّفة غلط من الفئتين الموجبة والسالبة.","<code>Error Rate</code> = (FP + FN) / الكل. وهو عكس الـ Accuracy."),
+M("SGD is stands for ...............",["Stochastic Gradient Descent","Stochastic Graded Descent","Stochastic Gradient Describtion","none of them"],0,"SGD اختصار لـ ...............","<code>SGD</code> = <b>Stochastic Gradient Descent</b> (النزول التدريجي العشوائي)."),
+M("The general idea of ...............is to count the number of times instances of class A are classified as class B",["confusion matrix","StratifiedKFold","regular Kfold","none of them"],0,"الفكرة العامة لـ ............... هي عدّ المرات اللي أمثلة الفئة A اتصنفت فيها كفئة B.","ده تعريف الـ <code>confusion matrix</code>: صفوفها الفئات الفعلية وأعمدتها الفئات المتوقعة."),
+M("What is the purpose of a confusion matrix?",["To evaluate the performance of a classification algorithm","To identify the most important features in a dataset","To select the right machine learning algorithm for a given problem","To tune the hyperparameters of a machine learning algorithm"],0,"إيه الغرض من الـ confusion matrix؟","الغرض هو <b>تقييم أداء خوارزمية التصنيف</b> وفهم أنواع الأخطاء اللي بتعملها."),
+M("Just like the ..................... function, ...................performs K-fold cross-validation, but instead of returning the evaluation scores, it returns the predictions made on each test fold.",["cross_val_score(), cross_val_predict()","cross_val_predict(), cross_val_score()","cross_val_test(), cross_val_score()","none of them"],0,"زي دالة ..................... ، الدالة ................... بتنفذ K-fold cross-validation، لكن بدل ما ترجّع درجات التقييم بترجّع التوقعات على كل test fold.","الأولى هي <code>cross_val_score()</code> (ترجّع الدرجات)، والتانية <code>cross_val_predict()</code> (ترجّع التوقعات)."),
+T("There are various strategies that you can use to perform multiclass classification with multiple binary classifiers.",1,"فيه استراتيجيات مختلفة تقدر تستخدمها لعمل multiclass classification بمجموعة binary classifiers.","العبارة <b>صحيحة</b>. أشهرها <code>OvR</code> (one-versus-the-rest) و <code>OvO</code> (one-versus-one)."),
+M("Each row in a confusion matrix represents an ...................",["actual class","predicted class","both of them","none of them"],0,"كل صف في الـ confusion matrix بيمثّل ...................","كل <b>صف</b> = <b>actual class</b> (الفئة الفعلية).","الأعمدة هي اللي بتمثّل الـ predicted class."),
+T("the combination of precision and recall into a single metric called confusion matrix",0,"دمج الـ precision والـ recall في مقياس واحد اسمه confusion matrix.","العبارة <b>خاطئة</b>. المقياس اللي بيدمج الـ precision والـ recall هو <code>F1 score</code>، مش الـ confusion matrix. (نص السؤال في الملف مقطوع من أوله.)"),
+M("Each column in a confusion matrix represents an ...................",["predicted class","actual class","both of them","none of them"],0,"كل عمود في الـ confusion matrix بيمثّل ...................","كل <b>عمود</b> = <b>predicted class</b> (الفئة المتوقعة)."),
+T("Scikit-Learn let you set the threshold directly",0,"Scikit-Learn بتسمحلك تحدد الـ threshold مباشرةً.","العبارة <b>خاطئة</b>. مش بتسمحلك تحدد الـ threshold مباشرة. بدل كده بتستخدم <code>decision_function()</code> عشان تجيب الدرجات وتقارنها بـ threshold بتاعك."),
+M("MNIST Dataset is a set of ................ small images of digits handwritten",["70,000","75,000","7000","700,000"],0,"MNIST هي مجموعة فيها ................ صورة صغيرة لأرقام مكتوبة بخط اليد.","فيها <b>70,000</b> صورة: 60,000 للتدريب و 10,000 للاختبار."),
+M("What is the difference between StratifiedKFold and regular KFold cross-validation",["StratifiedKFold performs stratified sampling, while regular KFold does not","StratifiedKFold is always slower than regular Kfold","StratifiedKFold is only useful for imbalanced datasets.","There is no difference between StratifiedKFold and regular Kfold"],0,"إيه الفرق بين StratifiedKFold و KFold العادي؟","الـ <code>StratifiedKFold</code> بيعمل <b>stratified sampling</b>، يعني كل fold فيه نفس نسبة الفئات تقريباً زي الـ dataset الأصلية. الـ KFold العادي مش بيعمل كده."),
+M("in MNIST Dataset, A ........... key describing the dataset.",["DESCR","data","target","none of them"],0,"في MNIST فيه مفتاح (key) ........... بيوصف الـ dataset.","المفتاح <code>DESCR</code> فيه وصف الـ dataset."),
+T("The RandomForestClassifier class have predict_proba() instead of decision_function() method.",1,"كلاس RandomForestClassifier فيه دالة predict_proba() بدل decision_function().","العبارة <b>صحيحة</b>. الـ <code>RandomForestClassifier</code> بيطلّع احتمالات كل فئة بـ <code>predict_proba()</code> ومعندوش <code>decision_function()</code>."),
+M("the confusion matrix of perfect classifier would have ............ values only on its main diagonal",["nonzero","zero","ones","none of them"],0,"الـ confusion matrix للمصنّف المثالي هيبقى فيه قيم ............ بس على القطر الرئيسي.","المصنّف المثالي مفيهوش أخطاء، فالقيم <b>nonzero</b> بتبقى على القطر الرئيسي بس (التصنيفات الصح) وكل اللي برا القطر أصفار."),
+T("The RandomForestClassifier class does not have a decision_function() method.",1,"كلاس RandomForestClassifier مفيهوش دالة decision_function().","العبارة <b>صحيحة</b>. بيستخدم <code>predict_proba()</code> بدلها."),
+M("in MNIST Dataset, A ........... key containing an array with the labels",["target","DESCR","data","none of them"],0,"في MNIST فيه مفتاح ........... فيه مصفوفة الـ labels.","المفتاح <code>target</code> فيه الـ labels (الأرقام الحقيقية 0-9)."),
+M("in MNIST Dataset, A ........... key containing an array with one row per instance and one column per feature.",["data","DESCR","target","none of them"],0,"في MNIST فيه مفتاح ........... فيه مصفوفة صف لكل مثال وعمود لكل feature.","المفتاح <code>data</code> فيه الصور (كل صف صورة 784 بكسل)، يعني عمود لكل feature.")
+];
+
+/* ===== Network quiz 1 ===== */
+const nQ={
+ sw:["Which network device operates at Layer 2 (Data Link Layer) and uses a MAC address table to forward data?","أي جهاز شبكة بيشتغل في الطبقة 2 (Data Link) وبيستخدم جدول عناوين MAC لتمرير البيانات؟","الـ <b>Switch</b> بيشتغل في الطبقة 2، وبيتعلّم عناوين الـ MAC ويحطها في جدول (MAC address table)، وبعدين يبعت الـ frame للبورت الصح بس بدل ما يبعته للكل.","الـ Hub والـ Repeater في الطبقة 1 ومبيفهموش MAC، والـ Router في الطبقة 3 وبيستخدم IP."],
+ frame:["What is the data unit processed at the Data Link layer of the OSI model?","إيه وحدة البيانات اللي بتتعامل معاها طبقة الـ Data Link في نموذج OSI؟","وحدة البيانات في طبقة الـ Data Link هي الـ <b>Frame</b>.","Bits للطبقة 1، Packets للطبقة 3، Segment للطبقة 4 (Transport)."],
+ phys:["What is the primary role of the Physical Layer?","إيه الدور الأساسي للطبقة الفيزيائية (Physical Layer)؟","الـ Physical Layer مسؤولة عن الخصائص الفعلية للنقل: طول الكابل ومعدل نقل البتات (bit rate) ومستويات الجهد (voltage)، يعني إزاي البتات 0 و 1 بتتنقل كإشارات.","إنشاء الجلسات شغل طبقة الـ Session، والعنونة المنطقية والتوجيه شغل الـ Network layer."],
+ layers:["How many layers are there in the OSI model?","كام طبقة في نموذج OSI؟","نموذج OSI فيه <b>7 طبقات</b>: Physical, Data Link, Network, Transport, Session, Presentation, Application.",""],
+ tcpip:["The TCP/IP model consists of how many layers?","نموذج TCP/IP فيه كام طبقة؟","نموذج TCP/IP فيه <b>4 طبقات</b>: Network Access, Internet, Transport, Application.","الـ 7 طبقات دي نموذج OSI، والـ 5 طبقات نسخة مبسطة بتتدرّس أحياناً."],
+ macbits:["How many bits make up a physical MAC address?","عنوان الـ MAC الفعلي بيتكوّن من كام bit؟","عنوان الـ MAC طوله <b>48 bit</b> (6 bytes)، وبيتكتب بصيغة hex زي AA:BB:CC:11:22:33.","الـ 32 bit هي طول عنوان IPv4."],
+ macLayer:["MAC addresses are used at which layer of the OSI model for hop-to-hop delivery?","عناوين الـ MAC بتُستخدم في أي طبقة من OSI للتوصيل من نقطة لنقطة (hop-to-hop)؟","عناوين الـ MAC شغل طبقة الـ <b>Data Link</b>، وبتوصّل الـ frame بين جهازين متجاورين على نفس الشبكة المحلية، أما IP فبيوصّل end-to-end.",""],
+ sesFn:["What is the main function of the Session Layer?","إيه الوظيفة الأساسية لطبقة الـ Session؟","طبقة الـ Session بتعمل <b>إنشاء وإدارة وإنهاء الجلسات</b> بين التطبيقات.","التوجيه شغل الـ Network، والكابلات والجهد شغل الـ Physical، والـ Checksum لاكتشاف الأخطاء."],
+ parity:["Which error detection method uses parity bits where an even number of 1s results in a parity bit value of 0?","أي طريقة لاكتشاف الأخطاء بتستخدم parity bits، وفيها لو عدد الـ 1s زوجي يبقى الـ parity bit قيمته 0؟","ده <b>Parity Checking</b> (even parity): بنضيف bit بحيث يبقى العدد الكلي للـ 1s زوجي، فلو عدد الـ 1s أصلاً زوجي الـ parity bit بيبقى 0.","الـ Checksum بيجمع قيم، والـ Framing لتحديد بداية ونهاية الإطار، والـ Flow Control لتنظيم سرعة الإرسال."],
+ tcp:["Which of the following protocols operates at the Transport layer as a connection-oriented and reliable protocol?","أي بروتوكول من دول بيشتغل في طبقة الـ Transport وهو connection-oriented وموثوق (reliable)؟","<b>TCP</b> بيعمل اتصال قبل الإرسال (three-way handshake) وبيضمن وصول البيانات بالترتيب وبيعيد إرسال المفقود.","UDP بدون اتصال وغير موثوق، و IP و ICMP في طبقة الـ Network."],
+ arp:["Which protocol is used to find a physical address from an Internet (IP) address?","أي بروتوكول بيُستخدم لمعرفة العنوان الفعلي (MAC) من عنوان الإنترنت (IP)؟","<b>ARP</b> (Address Resolution Protocol) بيحوّل عنوان IP لعنوان MAC.","RARP بيعمل العكس (من MAC لـ IP)."],
+ ospf:["Which routing protocol is mentioned in the Network layer for choosing the best path?","أي بروتوكول توجيه (routing) مذكور في طبقة الـ Network لاختيار أفضل مسار؟","<b>OSPF</b> بروتوكول routing بيحسب أفضل مسار بين الـ routers.","HTTP و SMTP و FTP بروتوكولات طبقة التطبيقات (Application)."],
+ star:["In which network topology do all devices connect to a central managed switch, making it the most common LAN design?","في أي topology كل الأجهزة بتتوصل بـ switch مركزي، وده أشهر تصميم للـ LAN؟","<b>Star Topology</b>: كل جهاز بيتوصل بنقطة مركزية (switch)، وفشل جهاز واحد مش بيوقّف الباقي.",""],
+ bus:["What is a key characteristic of Bus Topology?","إيه الخاصية الأساسية لـ Bus Topology؟","في الـ Bus كل الأجهزة بتشارك <b>كابل رئيسي واحد (backbone)</b>.","الحلقة المغلقة خاصة بالـ Ring، والـ switch المركزي خاص بالـ Star."],
+ physDev:["What are the two primary devices/components that operate at the Physical Layer?","إيه المكوّنات الأساسية اللي بتشتغل في الطبقة الفيزيائية؟","الطبقة الفيزيائية مرتبطة بـ <b>الكابلات ووسائط الشبكة (سلكية/لاسلكية)</b> اللي بتنقل الإشارات.","الـ Routers والـ Switches في طبقات أعلى (3 و 2)."],
+ router:["Which device operates at Layer 3 (Network Layer) and routes data between different networks using IP addresses?","أي جهاز بيشتغل في الطبقة 3 (Network) وبيوجّه البيانات بين شبكات مختلفة باستخدام عناوين IP؟","الـ <b>Router</b> بيقرأ عنوان IP ويقرر المسار لبين الشبكات.","Hub في الطبقة 1، و Bridge و Switch في الطبقة 2."],
+ waf:["What is the primary function of a Web Application Firewall (WAF)?","إيه الوظيفة الأساسية للـ Web Application Firewall (WAF)؟","الـ WAF بيحمي سيرفرات الويب في <b>طبقة التطبيقات</b> عن طريق فلترة حركة HTTP/HTTPS (زي هجمات SQL injection و XSS).","الـ routing شغل الـ Router، وتوزيع الـ IP شغل DHCP."],
+ netLayer:["Which layer in the OSI model is responsible for end-to-end packet delivery and logical addressing (like IPv4)?","أي طبقة في OSI مسؤولة عن توصيل الـ packets من الطرف للطرف والعنونة المنطقية (زي IPv4)؟","طبقة الـ <b>Network</b> هي اللي بتتعامل مع عناوين IP والتوجيه.","الـ Data Link بتتعامل مع MAC، والـ Transport مع الـ ports والاتصال."],
+ pres:["Which layer is responsible for translating, encrypting, and compressing data?","أي طبقة مسؤولة عن الترجمة والتشفير وضغط البيانات؟","طبقة الـ <b>Presentation</b> بتحوّل صيغة البيانات وتشفّرها وتضغطها.",""],
+ inet:["Which layer corresponds to the \"Internet Layer\" of the TCP/IP model when compared to the OSI model?","أي طبقة بتقابل الـ \"Internet Layer\" في TCP/IP لما نقارنها بـ OSI؟","الـ Internet Layer في TCP/IP بتقابل طبقة الـ <b>Network</b> في OSI، وفيها IP.",""],
+ hub:["Which network device operates at Layer 1 (Physical Layer) and broadcasts data to all ports without filtering?","أي جهاز بيشتغل في الطبقة 1 (Physical) وبيبعت البيانات لكل البورتات بدون فلترة؟","الـ <b>Hub</b> جهاز غبي: أي إشارة بتوصله بيكررها على كل البورتات.","الـ Switch بيفلتر بالـ MAC، والـ Router بيوجّه بالـ IP."],
+ mesh:["Which topology provides maximum redundancy and fault tolerance by connecting every device to every other device or multiple others?","أي topology بتوفر أقصى redundancy وتحمّل للأعطال بربط كل جهاز بكل الأجهزة التانية أو بعدد منها؟","الـ <b>Mesh</b> فيها مسارات كتير بين الأجهزة، فلو مسار فشل البيانات بتعدي من مسار تاني.","Star و Ring و Bus أقل في التحمل."],
+ proto:["What is the primary role of a network protocol in data communications?","إيه الدور الأساسي للبروتوكول في الاتصالات؟","البروتوكول هو <b>مجموعة قواعد موحّدة</b> بتحدد إزاي البيانات بتتنسّق وتتنقل وتتستقبل.","حجب الهجمات شغل الـ Firewall، وتقوية الإشارة شغل الـ Repeater."]
+};
+/* helper: N(key, options, answerIndex) */
+const N=(k,o,a)=>({q:nQ[k][0],o,a,ar:nQ[k][1],why:nQ[k][2],no:nQ[k][3]});
+const N1=[
+N('sw',["Hub","Router","Repeater","Switch"],3),
+N('frame',["Bits","Frame","Packets","Segment"],1),
+{q:"Which firewall type inspects individual packets based on header information like source IP, destination IP, and port numbers using an Access Control List (ACL)?",o:["Stateful Inspection Firewall","Packet Filtering Firewall","Web Application Firewall","Proxy Firewall"],a:1,ar:"أي نوع Firewall بيفحص كل packet لوحده بناءً على بيانات الـ header (IP المصدر والوجهة والـ port) باستخدام قائمة تحكم ACL؟",why:"الـ <b>Packet Filtering Firewall</b> بيقارن header كل packet بقواعد الـ <code>ACL</code> ويقرر يسمح أو يمنع، ومبيتتبعش حالة الاتصال.",no:"الـ Stateful بيتتبع الاتصالات، والـ WAF بيحمي تطبيقات الويب."},
+N('phys',["Session establishment","Managing software user interfaces","Handling physical properties like cable length, bit rate, and voltage levels","Logical addressing and routing"],2),
+{q:"Walkie-talkies are a classic real-world example of which data flow mode?",o:["Half-duplex","Simplex","Multipoint","Full-duplex"],a:0,ar:"أجهزة اللاسلكي (walkie-talkie) مثال كلاسيكي لأي وضع لتدفق البيانات؟",why:"<b>Half-duplex</b>: الاتجاهين ممكنين لكن مش في نفس الوقت، واحد يتكلم والتاني يسمع ثم يتبادلوا.",no:"Simplex اتجاه واحد (زي التلفزيون)، و Full-duplex الاتجاهين معاً (زي التليفون)."},
+{q:"Which category of network covers a town or a city?",o:["PAN","MAN","LAN","WAN"],a:1,ar:"أي فئة من الشبكات بتغطي بلدة أو مدينة؟",why:"<b>MAN</b> (Metropolitan Area Network) بتغطي مدينة أو منطقة حضرية.",no:"PAN شخصية، LAN محلية (مبنى)، WAN واسعة (دول/قارات)."},
+{q:"In a point-to-point connection:",o:["A dedicated link connects two devices exclusively","No protocols are required","Data is broadcasted to all active nodes","More than two devices share a single link"],a:0,ar:"في الاتصال نقطة لنقطة (point-to-point):",why:"فيه <b>رابط مخصص بيوصل جهازين بس</b> بشكل حصري.",no:"البث للكل أو مشاركة الرابط بين أكتر من جهازين ده multipoint."},
+N('parity',["Framing","Flow Control","Parity Checking","CheckSum"],2),
+{q:"What are the five components of a data communications system?",o:["Sender, Receiver, Packet, Port, Address","Client, Server, Hub, Cable, Protocol","Sender, Receiver, Message, Medium, Protocol","Sender, Router, Switch, Medium, Protocol"],a:2,ar:"إيه المكوّنات الخمسة لنظام الاتصالات؟",why:"المكوّنات الخمسة هي: <b>Sender</b> (المرسل) و <b>Receiver</b> (المستقبل) و <b>Message</b> (الرسالة) و <b>Medium</b> (الوسط) و <b>Protocol</b> (البروتوكول).",no:""},
+{q:"Which type of data flow allows transmission in both directions simultaneously?",o:["Simplex","Half-duplex","Multipoint","Full-duplex"],a:3,ar:"أي نوع تدفق بيسمح بالإرسال في الاتجاهين في نفس الوقت؟",why:"<b>Full-duplex</b>: الاتجاهين معاً في نفس اللحظة زي المكالمة التليفونية.",no:"Half-duplex بالتناوب، و Simplex في اتجاه واحد."},
+N('macbits',["64 bits","32 bits","16 bits","48 bits"],3),
+{q:"Which firewall type maintains a conversation list to keep track of active connections and offers more security than basic packet filtering?",o:["Layer 1 Firewall","Hub-based Firewall","Packet Filtering Firewall","Stateful Inspection Firewall"],a:3,ar:"أي نوع Firewall بيحتفظ بقائمة محادثات لتتبع الاتصالات النشطة وبيوفر أماناً أكتر من الفلترة البسيطة؟",why:"الـ <b>Stateful Inspection Firewall</b> بيتتبع حالة كل اتصال، فبيسمح بس بالحزم اللي تخص اتصال شغال.",no:"الـ Packet Filtering بيفحص كل حزمة لوحدها بدون ذاكرة."},
+N('tcp',["TCP","UDP","IP","ICMP"],0),
+N('sesFn',["Routing packets across networks","Providing physical cables and voltage levels","Error detection using Checksum","Establishment, management, and termination of sessions"],3),
+N('arp',["ARP","ICMP","TCP","RARP"],0),
+N('ospf',["SMTP","OSPF","HTTP","FTP"],1),
+N('macLayer',["Physical Layer","Data Link Layer","Transport Layer","Network Layer"],1),
+N('layers',["3 layers","7 layers","4 layers","5 layers"],1),
+N('tcpip',["6 layers","7 layers","5 layers","4 layers"],3),
+N('tcp',["ICMP","TCP","UDP","IP"],1),
+N('star',["Mesh Topology","Ring Topology","Bus Topology","Star Topology"],3),
+N('sesFn',["Routing packets across networks","Establishment, management, and termination of sessions","Providing physical cables and voltage levels","Error detection using Checksum"],1),
+N('parity',["CheckSum","Framing","Parity Checking","Flow Control"],2),
+N('frame',["Frame","Bits","Segment","Packets"],0),
+N('bus',["Devices share a single backbone cable","Closed circular loop for data flow","Centralized switch control","Full duplex communication on every port"],0),
+N('physDev',["NIC Card and Hubs","Cables and Network Media (Wired/Wireless)","Routers and Switches","Firewalls"],1),
+N('ospf',["HTTP","SMTP","OSPF","FTP"],2),
+N('router',["Hub","Bridge","Switch","Router"],3),
+N('waf',["Routing packets between WAN and LAN","Repeating electrical signals at Layer 1","Protecting web servers at the application layer by filtering HTTP/HTTPS traffic","Assigning dynamic IP addresses to hosts"],2),
+N('macbits',["16 bits","64 bits","32 bits","48 bits"],3),
+N('macLayer',["Data Link Layer","Network Layer","Transport Layer","Physical Layer"],0),
+N('netLayer',["Transport Layer","Network Layer","Data Link Layer","Physical Layer"],1),
+N('pres',["Application Layer","Presentation Layer","Session Layer","Transport Layer"],1),
+N('phys',["Managing software user interfaces","Handling physical properties like cable length, bit rate, and voltage levels","Session establishment","Logical addressing and routing"],1),
+N('netLayer',["Network Layer","Data Link Layer","Transport Layer","Physical Layer"],0),
+N('physDev',["Routers and Switches","NIC Card and Hubs","Firewalls","Cables and Network Media (Wired/Wireless)"],3),
+N('inet',["Transport Layer","Network Layer","Session Layer","Data Link Layer"],1),
+N('arp',["ICMP","RARP","TCP","ARP"],3),
+N('hub',["Switch","Hub","Firewall","Router"],1),
+N('pres',["Application Layer","Transport Layer","Presentation Layer","Session Layer"],2),
+N('inet',["Transport Layer","Session Layer","Data Link Layer","Network Layer"],3),
+N('layers',["4 layers","5 layers","3 layers","7 layers"],3),
+N('tcpip',["5 layers","7 layers","6 layers","4 layers"],3),
+N('mesh',["Star Topology","Ring Topology","Bus Topology","Mesh Topology"],3),
+N('proto',["To provide a standardized set of rules that govern how data is formatted, transmitted, and received","To block unauthorized web application traffic and cyber threats","To physically amplify electrical signals over long cable distances","To route packets dynamically between different internet service providers"],0)
+];
+
+const app = document.getElementById('app');
+const L = ['A','B','C','D'];
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const blankify = s => esc(s).replace(/[.…]{3,}/g,'<span class="blank"></span>');
+
+/* ضيف مواد أو كويزات جديدة هنا */
+const SUBJECTS = [
+  {id:'ml', sym:'ML', name:'Machine Learning', ar:'تعلّم الآلة',
+   quizzes:[ {id:'quiz1', title:'quiz 1', questions:Q}, {id:'quiz2', title:'quiz 2', questions:Q2}, {id:'quiz3', title:'quiz 3', questions:Q3} ]},
+  {id:'net', sym:'NET', name:'Network', ar:'الشبكات',
+   quizzes:[ {id:'quiz1', title:'quiz 1', questions:N1} ]}
+];
+const saved = {};           // الإجابات بتتحفظ طول ما الصفحة مفتوحة
+let st = {view:'home', sub:null, quiz:null};
+
+function bar(backLabel){
+  return `<div class="bar"><span class="brand">quiestions</span>${backLabel?`<button class="back" id="backBtn">${backLabel}</button>`:''}</div>`;
+}
+function go(v,sub,quiz){ window.onscroll=null; st={view:v,sub,quiz}; render(); window.scrollTo(0,0); }
+
+/* الحروف بتهرب من الماوس وترجع مكانها */
+const hm={x:-9999,y:-9999};
+addEventListener('pointermove',e=>{hm.x=e.clientX;hm.y=e.clientY;});
+addEventListener('pointerdown',e=>{hm.x=e.clientX;hm.y=e.clientY;});
+document.addEventListener('pointerleave',()=>{hm.x=hm.y=-9999;});
+const hmt=e=>{const t=e.touches[0];if(t){hm.x=t.clientX;hm.y=t.clientY;}};
+addEventListener('touchstart',hmt,{passive:true});addEventListener('touchmove',hmt,{passive:true});
+addEventListener('touchend',()=>{hm.x=hm.y=-9999;});addEventListener('touchcancel',()=>{hm.x=hm.y=-9999;});
+addEventListener('pointerup',e=>{if(e.pointerType==='touch'){hm.x=hm.y=-9999;}});
+(function loop(){
+  const h=document.getElementById('hero');
+  if(h&&!matchMedia('(prefers-reduced-motion:reduce)').matches){
+    if(h._chars!==h.querySelectorAll('.ch').length||!h._st){h._st=[...h.querySelectorAll('.ch')].map(el=>({el,x:0,y:0,vx:0,vy:0}));h._chars=h._st.length;}
+    const R=150;
+    for(const c of h._st){
+      const r=c.el.getBoundingClientRect(), cx=r.left+r.width/2-c.x, cy=r.top+r.height/2-c.y; // مكان الحرف الأصلي
+      const px=cx+c.x, py=cy+c.y, dx=px-hm.x, dy=py-hm.y, d=Math.hypot(dx,dy);
+      if(d<R){const f=(1-d/R), n=d||1; c.vx+=dx/n*f*5; c.vy+=dy/n*f*5;}
+      c.vx+=-c.x*.07; c.vy+=-c.y*.07; c.vx*=.82; c.vy*=.82; c.x+=c.vx; c.y+=c.vy;
+      const m=Math.min(1,Math.hypot(c.x,c.y)/60);
+      if(m<.01&&Math.abs(c.vx)+Math.abs(c.vy)<.02){c.x=c.y=c.vx=c.vy=0;c.el.style.transform='';c.el.style.color='';}
+      else{c.el.style.transform=`translate(${c.x.toFixed(1)}px,${c.y.toFixed(1)}px) rotate(${(c.vx*3).toFixed(1)}deg)`;
+        c.el.style.color=`color-mix(in srgb,var(--accent) ${Math.round(m*100)}%,var(--ink))`;}
+    }
+  }
+  requestAnimationFrame(loop);
+})();
+function home(){
+  app.innerHTML = `<h1 class="hero" id="hero" aria-label="quiestions">${[...'quiestions'].map(c=>`<span class="ch" aria-hidden="true">${c}</span>`).join('')}</h1>
+  <div class="quizlist">${SUBJECTS.map(s=>`
+    <button class="subject subj-btn" data-sub="${s.id}">
+      <span class="subject-head"><span class="sym" aria-hidden="true">${s.sym}</span>
+      <span><span class="h2">${s.name}</span><span class="sub">${s.quizzes.length} quiz${s.quizzes.length>1?'zes':''}</span></span></span>
+      <span class="pill">Open</span>
+    </button>`).join('')}</div>`;
+  document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('subject',b.dataset.sub));
+}
+
+function subject(){
+  const s = SUBJECTS.find(x=>x.id===st.sub);
+  app.innerHTML = bar('← Back') + `
+  <div class="subject-head" style="margin-top:24px"><div class="sym" aria-hidden="true">${s.sym}</div>
+  <div><h1 style="margin:0;direction:ltr;text-align:left">${s.name}</h1></div></div>
+  <div style="height:20px"></div>
+  <div class="quizlist">${s.quizzes.map(q=>{
+    const a=saved[s.id+q.id]||[]; const d=a.filter(x=>x!==undefined&&x!==null).length;
+    const r=q.questions.filter((x,k)=>a[k]===x.a).length;
+    return `<button class="quizbtn" data-quiz="${q.id}"><b>${q.title}</b><span>${q.questions.length} questions${d?` · ${d} answered (${r} correct)`:''}</span><span class="pill">${d?'Continue':'Start'}</span></button>`}).join('')}</div>`;
+  document.getElementById('backBtn').onclick=()=>go('home');
+  document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',s.id,b.dataset.quiz));
+}
+
+function quiz(){
+  const s = SUBJECTS.find(x=>x.id===st.sub), z = s.quizzes.find(x=>x.id===st.quiz), Qs = z.questions, key = s.id+z.id;
+  const ans = saved[key] = saved[key] || Array(Qs.length).fill(null);
+  let cur=0;
+  let rowMode=false; try{rowMode=localStorage.getItem('dotsRow')==='1'}catch(e){}
+  app.innerHTML = bar('← Back') + `<div class="qhead"><div class="qnum" style="margin:0">${s.name}</div><h1 style="margin:2px 0 0;direction:ltr;text-align:left">${z.title}</h1></div>
+    <div class="prog"><div class="prog-top"><span id="pScore"></span><button class="dm" id="dotsMode" type="button"></button><span id="pCount"></span></div>
+    <div class="track"><div class="fill" id="pFill"></div></div>
+    <div class="dots" id="pDots" role="group" aria-label="Questions"></div></div>
+    <div id="list"></div><div id="final"></div>`;
+  document.getElementById('backBtn').onclick=()=>go('subject',s.id);
+
+  const list = document.getElementById('list');
+  Qs.forEach((q,k)=>{ const el=document.createElement('article'); el.className='qcard'; el.id='q'+k; list.appendChild(el); drawQ(k); });
+  updateProg(); applyMode();
+
+  function drawQ(k){
+    const q=Qs[k], a=ans[k], done=a!==null;
+    let h=`<div class="qnum">Question ${k+1} / ${Qs.length}</div><p class="qtext">${blankify(q.q)}</p><div class="opts">${q.o.map((t,i)=>{
+      let c='opt'; if(done){ if(i===q.a)c+=' right'; else if(i===a)c+=' wrong'; else c+=' faded'; }
+      const m=done?(i===q.a?'<span class="mark">✓ Correct</span>':(i===a?'<span class="mark">✗ Your answer</span>':'')):'';
+      return `<button class="${c}" data-k="${k}" data-i="${i}" ${done?'disabled':''}><span class="k">${L[i]}</span><span>${esc(t)}</span>${m}</button>`}).join('')}</div>`;
+    if(done){ const ok=a===q.a;
+      h+=`<div class="explain ${ok?'good':'miss'}"><div class="verdict">${ok?'Correct':'Wrong · Answer: '+L[q.a]+' ('+esc(q.o[q.a])+')'}</div><div class="ex-body">
+        <div><h3>معنى السؤال</h3><p>${q.ar}</p></div>
+        <div><h3>ليه ${L[q.a]} هي الإجابة الصح؟</h3><p>${q.why}</p></div>
+        ${q.no?`<div><h3>ملاحظة</h3><p>${q.no}</p></div>`:''}</div></div>`; }
+    const el=document.getElementById('q'+k); el.innerHTML=h;
+    el.querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{ ans[k]=+b.dataset.i; drawQ(k); updateProg();
+      el.querySelector('.explain').scrollIntoView({behavior:'smooth',block:'nearest'}); });
+  }
+
+  function applyMode(){
+    const dd=document.getElementById('pDots'),bt=document.getElementById('dotsMode');
+    dd.classList.toggle('row',rowMode); bt.textContent=rowMode?'▦ Grid':'↔ Row'; bt.setAttribute('aria-pressed',rowMode);
+    const cd=dd.children[cur]; if(rowMode&&cd) dd.scrollLeft=cd.offsetLeft-dd.clientWidth/2+cd.offsetWidth/2;
+  }
+  document.getElementById('dotsMode').onclick=()=>{rowMode=!rowMode;try{localStorage.setItem('dotsRow',rowMode?'1':'0')}catch(e){}applyMode();};
+  function setCur(k){
+    cur=k;
+    document.getElementById('pCount').textContent=`Question ${k+1} / ${Qs.length}`;
+    document.getElementById('pFill').style.width=((k+1)/Qs.length*100)+'%';
+    document.querySelectorAll('#pDots .dot').forEach((b,i)=>b.classList.toggle('cur',i===k));
+    const dd=document.getElementById('pDots'),cd=dd&&dd.children[k]; if(rowMode&&cd) dd.scrollLeft=cd.offsetLeft-dd.clientWidth/2+cd.offsetWidth/2;
+  }
+  function onScroll(){
+    const line=window.innerHeight*0.35; let k=0;
+    for(let i=0;i<Qs.length;i++){ if(document.getElementById('q'+i).getBoundingClientRect().top<=line) k=i; else break; }
+    if(k!==cur) setCur(k);
+  }
+  window.onscroll=onScroll;
+  function updateProg(){
+    const d=ans.filter(x=>x!==null).length, r=ans.filter((x,k)=>x===Qs[k].a).length;
+    document.getElementById('pScore').textContent=`Correct: ${r} / ${d}`;
+    setCur(cur);
+    const dots=document.getElementById('pDots'); dots.innerHTML='';
+    Qs.forEach((q,k)=>{ const b=document.createElement('button'); b.className='dot '+(ans[k]===null?'':(ans[k]===q.a?'ok':'bad'))+(k===cur?' cur':''); b.setAttribute('aria-label','Question '+(k+1)); b.textContent=k+1;
+      b.onclick=()=>document.getElementById('q'+k).scrollIntoView({behavior:'smooth',block:'start'}); dots.appendChild(b); });
+    const f=document.getElementById('final');
+    if(d===Qs.length){ const pct=Math.round(r/Qs.length*100);
+      const msg='';
+      f.innerHTML=`<div class="qcard"><div class="qnum">Result</div><div class="score">${r}/${Qs.length}</div><p style="margin:0;font-weight:600">${pct}%</p>
+        <div class="next"><button class="btn ghost" id="again">Retry</button><button class="btn" id="toSub">Back to ${s.name}</button></div></div>`;
+      document.getElementById('again').onclick=()=>{saved[key]=null;go('quiz',s.id,z.id)};
+      document.getElementById('toSub').onclick=()=>go('subject',s.id);
+    } else f.innerHTML='';
+  }
+}
+
+
+/* خلفية تفاعلية للصفحة الرئيسية: شبكة نقاط (زي شبكة عصبية) بتتفاعل مع الماوس */
+const bg=(()=>{
+  const cv=document.getElementById('bg'), cx=cv.getContext('2d');
+  let W=0,H=0,dpr=1,pts=[],raf=0,on=false,col={a:'#2b4bff',l:'#d6dce5'};
+  const m={x:-9999,y:-9999,in:false};
+  const still=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+  function colors(){const cs=getComputedStyle(document.documentElement);col.a=cs.getPropertyValue('--accent').trim()||col.a;col.l=cs.getPropertyValue('--muted').trim()||col.l;}
+  function rgba(hex,al){let h=hex.replace('#','');if(h.length===3)h=h.split('').map(c=>c+c).join('');const n=parseInt(h,16);if(isNaN(n))return hex;return `rgba(${n>>16&255},${n>>8&255},${n&255},${al})`;}
+  function size(){dpr=Math.min(window.devicePixelRatio||1,2);W=innerWidth;H=innerHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.round(Math.min(110,Math.max(35,W*H/14000)));
+    while(pts.length<n)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:1.4+Math.random()*1.8});
+    pts.length=n;}
+  function frame(){
+    cx.clearRect(0,0,W,H);
+    const LINK=130,MR=160;
+    for(const p of pts){
+      const dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy);
+      if(m.in&&d<MR&&d>0){const f=(1-d/MR)*.9;p.vx+=dx/d*f*.12;p.vy+=dy/d*f*.12;}
+      p.vx*=.985;p.vy*=.985;
+      const sp=Math.hypot(p.vx,p.vy); if(sp<.12){p.vx+=(Math.random()-.5)*.02;p.vy+=(Math.random()-.5)*.02;}
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<-10)p.x=W+10;else if(p.x>W+10)p.x=-10;
+      if(p.y<-10)p.y=H+10;else if(p.y>H+10)p.y=-10;
+    }
+    cx.lineWidth=1;
+    for(let i=0;i<pts.length;i++){const a=pts[i];
+      for(let j=i+1;j<pts.length;j++){const b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+        if(d<LINK){cx.strokeStyle=rgba(col.l,(1-d/LINK)*.35);cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);cx.stroke();}}
+      if(m.in){const d=Math.hypot(a.x-m.x,a.y-m.y);
+        if(d<MR*1.3){cx.strokeStyle=rgba(col.a,(1-d/(MR*1.3))*.75);cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(m.x,m.y);cx.stroke();}}
+    }
+    for(const p of pts){const d=m.in?Math.hypot(p.x-m.x,p.y-m.y):999,near=d<MR*1.3;
+      cx.fillStyle=near?rgba(col.a,.95):rgba(col.l,.55);
+      cx.beginPath();cx.arc(p.x,p.y,p.r+(near?1:0),0,6.283);cx.fill();}
+    if(m.in){const g=cx.createRadialGradient(m.x,m.y,0,m.x,m.y,MR*1.4);g.addColorStop(0,rgba(col.a,.14));g.addColorStop(1,rgba(col.a,0));cx.fillStyle=g;cx.fillRect(m.x-MR*1.4,m.y-MR*1.4,MR*2.8,MR*2.8);}
+    raf=still?0:requestAnimationFrame(frame);
+  }
+  addEventListener('pointermove',e=>{m.x=e.clientX;m.y=e.clientY;m.in=true;if(still&&on)frame();});
+  const tpt=e=>{const t=e.touches[0];if(!t)return;m.x=t.clientX;m.y=t.clientY;m.in=true;if(still&&on)frame();};
+  addEventListener('touchstart',tpt,{passive:true});addEventListener('touchmove',tpt,{passive:true});
+  addEventListener('touchend',()=>{m.in=false});addEventListener('touchcancel',()=>{m.in=false});
+  addEventListener('pointerdown',e=>{m.x=e.clientX;m.y=e.clientY;m.in=true;
+    for(const p of pts){const dx=p.x-m.x,dy=p.y-m.y,d=Math.hypot(dx,dy);if(d<220&&d>0){p.vx+=dx/d*3;p.vy+=dy/d*3;}}});
+  document.addEventListener('pointerleave',()=>{m.in=false});
+  addEventListener('pointerup',e=>{if(e.pointerType==='touch')m.in=false;});
+  addEventListener('resize',()=>{if(on)size();});
+  return {
+    start(){if(on)return;on=true;colors();size();cv.classList.add('on');cancelAnimationFrame(raf);frame();},
+    stop(){on=false;cancelAnimationFrame(raf);cv.classList.remove('on');}
+  };
+})();
+function render(){ ({home,subject,quiz})[st.view](); if(st.view==='home')bg.start(); else bg.stop(); }
+document.documentElement.lang='en'; document.documentElement.dir='ltr';
+render();
+</script>
+
+</body></html>
