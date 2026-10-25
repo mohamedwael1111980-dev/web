@@ -1,4 +1,3 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>quiestions</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
@@ -304,7 +303,7 @@ M("MNIST Dataset is a set of small images of ................. by high school st
 M("What is the difference between a binary classification algorithm and a multiclass classification algorithm",["A binary classification algorithm can only predict two classes, while a multiclass classification algorithm can predict three or more classes.","A binary classification algorithm is more accurate than a multiclass classification algorithm.","A binary classification algorithm is more computationally expensive than a multiclass classification algorithm.","A binary classification algorithm is not as flexible as a multiclass classification algorithm."],0,"إيه الفرق بين خوارزمية التصنيف الثنائي (binary) والتصنيف المتعدد (multiclass)؟","الفرق في عدد الفئات: الـ <b>binary</b> بيتوقع فئتين بس (زي spam / not spam)، والـ <b>multiclass</b> بيتوقع 3 فئات أو أكتر.","باقي الاختيارات بتقارن الدقة والتكلفة والمرونة، وده مش الفرق الأساسي بينهم."),
 T("Increasing precision reduces recall, and vice versa. This is called the precision/recall trade-off",1,"زيادة الـ precision بتقلل الـ recall والعكس. وده بيتسمى precision/recall trade-off.","العبارة <b>صحيحة</b>. لما ترفع الـ threshold النموذج بيبقى أدق في اللي بيقوله موجب (precision أعلى) لكنه بيفوّت موجبات كتير (recall أقل)."),
 M("................ provides many helper functions to download popular datasets",["Scikit-Learn","keras","pandas","tensorflow"],0,"................ بتوفر دوال مساعدة كتير لتحميل الـ datasets الشهيرة.","<code>Scikit-Learn</code> فيها دوال زي <code>fetch_openml</code> لتحميل datasets مثل MNIST."),
-T("in MNIST Dataset, The test set is already shuffled",0,"في MNIST، الـ test set متخلّطة (shuffled) بالفعل.","العبارة <b>خاطئة</b> حسب الإجابة المعتمدة. الـ dataset متقسمة لـ training set (أول 60,000) و test set (آخر 10,000). المضمون في الكتاب إن الـ <b>training set</b> هي اللي متخلّطة مسبقاً."),
+T("in MNIST Dataset, The test set is already shuffled",0,"في MNIST، الـ test set متخلّطة (shuffled) بالفعل.","العبارة <b>خاطئة</b>. الـ dataset متقسمة لـ training set (أول 60,000) و test set (آخر 10,000)، واللي متخلّطة مسبقاً هي الـ <b>training set</b>."),
 M("..................performs K-fold cross-validation and returns the predictions made on each test fold",["cross_val_predict()","cross_val_score()","cross_test_predict()","none of them"],0,"................... بتنفذ K-fold cross-validation وترجّع التوقعات اللي اتعملت على كل test fold.","<code>cross_val_predict()</code> بترجّع التوقعات نفسها، مش درجات التقييم."),
 M("Which of the following is TRUE about the StratifiedKFold class",["all of them","It is a cross-validation method that is specifically designed for classification problems","It produces folds that contain a representative ratio of each class in the dataset","It can be used to improve the performance of machine learning models on imbalanced datasets"],0,"أي من الآتي صحيح عن كلاس StratifiedKFold؟","كل العبارات صحيحة: هو طريقة cross-validation مصممة للتصنيف، وبيعمل folds فيها نسبة كل فئة ممثلة صح، وبيفيد مع البيانات غير المتوازنة. فالإجابة <b>all of them</b>."),
 M("in MNIST Dataset, Each image is ............ pixels.",["28 × 28","30 × 30","32 × 32","none of them"],0,"في MNIST كل صورة حجمها ............ بكسل.","كل صورة <b>28 × 28 = 784</b> بكسل، وكل بكسل شدته من 0 (أبيض) لـ 255 (أسود)."),
@@ -379,7 +378,7 @@ N('tcpip',["6 layers","7 layers","5 layers","4 layers"],3),
 N('tcp',["ICMP","TCP","UDP","IP"],1),
 N('star',["Mesh Topology","Ring Topology","Bus Topology","Star Topology"],3),
 N('sesFn',["Routing packets across networks","Establishment, management, and termination of sessions","Providing physical cables and voltage levels","Error detection using Checksum"],1),
-N('parity',["CheckSum","Framing","Parity Checking","Flow Control"],2),
+{...N('parity',["CheckSum","Framing","Parity Checking","Flow Control"],2),q:"Which error detection method uses parity where an even number of 1s results in a parity bit value of 0?"},
 N('frame',["Frame","Bits","Segment","Packets"],0),
 N('bus',["Devices share a single backbone cable","Closed circular loop for data flow","Centralized switch control","Full duplex communication on every port"],0),
 N('physDev',["NIC Card and Hubs","Cables and Network Media (Wired/Wireless)","Routers and Switches","Firewalls"],1),
@@ -404,6 +403,125 @@ N('mesh',["Star Topology","Ring Topology","Bus Topology","Mesh Topology"],3),
 N('proto',["To provide a standardized set of rules that govern how data is formatted, transmitted, and received","To block unauthorized web application traffic and cyber threats","To physically amplify electrical signals over long cable distances","To route packets dynamically between different internet service providers"],0)
 ];
 
+const Q4=[
+T("in MINIST Dataset ,Each image is labeled with the letter it represents",0,"في MINIST، كل صورة متسمّاها (labeled) بالحرف اللي بتمثّله.","العبارة <b>خاطئة</b>. صور MNIST هي أرقام مكتوبة بخط اليد، فكل صورة label بتاعها هو <b>الرقم</b> (0 إلى 9) مش حرف."),
+T("Recall is the accuracy of the positive predictions by the classifier.",0,"الـ Recall هو دقة التوقعات الموجبة اللي بيعملها المصنّف.","العبارة <b>خاطئة</b>. التعريف ده هو تعريف الـ <code>Precision</code>. أما الـ <code>Recall</code> فهو نسبة الحالات الموجبة الفعلية اللي المصنّف اكتشفها."),
+M("........is sensitive to changes in data distributions.",["F-measure","Matthews Correlation Coefficient","Jaccard","Youden's Index"],2,"........ حسّاس للتغيرات في توزيع البيانات.","الإجابة هي <b>Jaccard</b> (مقياس التشابه Jaccard index).","F-measure و MCC و Youden's Index مقاييس تقييم تانية."),
+M("The ROC curve plots the ............... against the false positive rate (FPR).",["true positive rate","recall","none of them","both of them"],3,"منحنى الـ ROC بيرسم ............... مقابل معدل الإيجابيات الكاذبة (FPR).","الـ ROC بيرسم الـ <code>TPR</code> (true positive rate) مقابل الـ <code>FPR</code>، والـ TPR هو نفسه الـ <code>recall</code>. فالاختيارين صح، والإجابة <b>both of them</b>."),
+M("If that score is greater than a threshold, it assigns the instance to the ............",["none of them","positive class","negative class","both of them"],1,"لو الـ score ده أكبر من الـ threshold، المصنّف بيصنّف الحالة على إنها ............","لو الـ score أكبر من الـ threshold بيتصنّف المثال كـ <b>positive class</b>."),
+M("MIMIST Dataset is actually already split into a .............(the first 60,000 images) and a...............(the last 10,000 images)",["test set , training set","training set , test set","validation set , test set","none of them"],1,"الـ MIMIST (MNIST) متقسمة بالفعل لـ ............. (أول 60,000 صورة) و ............... (آخر 10,000 صورة).","أول 60,000 صورة هي الـ <b>training set</b>، وآخر 10,000 هي الـ <b>test set</b>."),
+T("K-fold cross-validation is a method of evaluating the performance of a machine learning model.",1,"الـ K-fold cross-validation طريقة لتقييم أداء نموذج الـ machine learning.","العبارة <b>صحيحة</b>. بنقسّم البيانات لـ K أجزاء ونقيّم النموذج K مرة، وكل مرة جزء مختلف يتحط للاختبار."),
+T("the purpose of a confusion matrix is identifying the most important features in a dataset",0,"الغرض من الـ confusion matrix هو تحديد أهم الـ features في الـ dataset.","العبارة <b>خاطئة</b>. الغرض من الـ <code>confusion matrix</code> هو تقييم أداء المصنّف ومعرفة أنواع الأخطاء، مش تحديد أهم الـ features."),
+M("In The One-versus-one (OvO) Strategy, you need .............classifiers for MNIST dataset",["N × (N–1)/2","45","none of them","both of them"],3,"في استراتيجية One-versus-one (OvO) محتاج ............. مصنّف لـ MNIST.","العدد المطلوب هو <code>N × (N−1) / 2</code>، ولـ MNIST اللي فيه 10 فئات يطلع <code>10 × 9 / 2 = 45</code>. الصيغة والرقم الاتنين صح، فالإجابة <b>both of them</b>."),
+T("A binary classification algorithm is more computationally expensive than a multiclass classification algorithm.",0,"خوارزمية التصنيف الثنائي (binary) أغلى حسابياً من خوارزمية التصنيف المتعدد (multiclass).","العبارة <b>خاطئة</b>. الـ binary classifier أبسط لأنه بيتعامل مع فئتين بس، فمش أغلى حسابياً من الـ multiclass."),
+T("K-fold cross-validation means splitting the testing set into K folds, then training them on each fold using a model trained on the remaining folds.",0,"الـ K-fold cross-validation معناها تقسيم الـ testing set لـ K أجزاء، وبعدين تدريبها على كل جزء باستخدام نموذج متدرّب على الأجزاء الباقية.","العبارة <b>خاطئة</b>. الـ K-fold بتقسّم الـ <b>training set</b> لـ K folds، وتدرّب النموذج على K−1 منهم وتقيّمه على الـ fold المتبقي، مش الـ testing set."),
+T("The SGDClassifier relies on randomness during training (hence the name “stochastic”).",1,"الـ SGDClassifier بيعتمد على العشوائية أثناء التدريب (عشان كده اسمه stochastic).","العبارة <b>صحيحة</b>. كلمة <code>stochastic</code> معناها عشوائي، وده بيجي من اختيار الأمثلة بشكل عشوائي أثناء التدريب."),
+M("What is the purpose of using a decision function() in machine learning",["To evaluate the performance of a machine learning model","To tune the hyperparameters of a machine learning model","To make predictions about the class of each instance","To calculate the probability of each class for each instance"],2,"إيه الغرض من استخدام decision_function() في الـ machine learning؟","الغرض هو <b>التنبؤ بفئة (class) كل مثال</b>: الدالة بترجّع score لكل مثال، ولو الـ score أكبر من الـ threshold بيتصنّف positive.","الاحتمالات شغل <code>predict_proba()</code>، والتقييم وضبط الـ hyperparameters له أدوات تانية."),
+T("A much better way to evaluate the performance of a classifier is to look at the confusion matrix",1,"طريقة أفضل بكتير لتقييم أداء المصنّف إنك تبص على الـ confusion matrix.","العبارة <b>صحيحة</b>. الـ <code>confusion matrix</code> بتوريك الإصابات والأخطاء بالتفصيل لكل فئة."),
+M("precision recall curve() computes..............for all possible thresholds.",["precision and recall","precision","recall","F-measure"],0,"الدالة precision_recall_curve() بتحسب .............. لكل الـ thresholds الممكنة.","الدالة بتحسب <b>precision و recall</b> الاتنين مع بعض لكل threshold."),
+M("What is the ROC AUC of a perfect classifier",["0","1","0.5","none of them"],1,"كام قيمة الـ ROC AUC لمصنّف مثالي (perfect)؟","المصنّف المثالي مساحته تحت المنحنى <code>AUC = 1</code>.","الـ 0.5 للمصنّف العشوائي."),
+M("Precision is the ..................... of the classifier.",["ratio of positive instances that are correctly detected","both of them","accuracy of the positive predictions","none of them"],2,"الـ Precision هو ..................... للمصنّف.","الـ Precision هو <b>دقة التوقعات الموجبة</b>: TP / (TP + FP).","نسبة الحالات الموجبة اللي اتكشفت صح هي تعريف الـ Recall."),
+M("images in MINIST dataset are ............",["none of them","coloerd images","grey images","black and white images"],2,"الصور في MINIST عبارة عن ............","الصور هي <b>grey images</b> (تدرّج رمادي)، شدة كل بكسل من 0 لـ 255."),
+T("SGD deals with training instances dependently, one at a time (which makes SGD well suited for online learning).",0,"الـ SGD بيتعامل مع أمثلة التدريب بشكل تابع (dependently)، واحد في كل مرة (وده بيخليه مناسب للـ online learning).","العبارة <b>خاطئة</b>. الـ <code>SGD</code> بيعالج الأمثلة <b>بشكل مستقل (independently)</b> واحد واحد، مش تابع."),
+T("(1 – ACC) represents the number of misclassified samples from both positive and negative classes",1,"(1 − ACC) بيمثّل عدد العينات المصنّفة غلط من الفئتين الموجبة والسالبة.","العبارة <b>صحيحة</b>. <code>ACC</code> هو نسبة التصنيف الصح، فـ <code>1 − ACC</code> هو الـ Error Rate."),
+M("...............represents the harmonic mean of precision and recall.",["none of them","F-measure","Matthews Correlation Coefficient","Youden's Index"],1,"............... بيمثّل المتوسط التوافقي (harmonic mean) للـ precision والـ recall.","ده الـ <b>F-measure</b>."),
+M("harmonic mean ...................",["gives much more weight to high values","none of them","gives much more weight to low values","treats all values equally"],2,"المتوسط التوافقي (harmonic mean) ...................","المتوسط التوافقي <b>بيدي وزن أكبر بكتير للقيم المنخفضة</b>."),
+M("the classifier will only get a .............. F1 score if both recall and precision are ............",["low , high","high , low","high , high","none of them"],2,"المصنّف مش هياخد F1 score ............... غير لو الـ recall والـ precision الاتنين ...............","هياخد F1 <b>عالي</b> بس لو الـ recall والـ precision الاتنين <b>عاليين</b>."),
+M("The.............. is the harmonic mean of precision and recall.",["none of them","Jaccard","F1 score","F-measure"],2,"الـ .............. هو المتوسط التوافقي للـ precision والـ recall.","ده الـ <b>F1 score</b>."),
+M("The ROC curve is common tool used with ............. classifiers",["both of them","multi","none of them","binary"],3,"منحنى الـ ROC أداة شائعة بتتستخدم مع مصنّفات ............. (classifiers).","الـ ROC أداة شائعة مع المصنّفات الـ <b>binary</b> (الثنائية)."),
+M("in MINIST Dataset ,Each image is ............. features.",["785","none of them","784","770"],2,"في MINIST كل صورة عبارة عن ............. feature.","كل صورة <b>28 × 28 = 784</b> feature (بكسل)."),
+M("Some algorithms, such as ........................, scale poorly with the size of the training set.",["Support Vector Machine classifiers","Naive Bayes classifiers","Random Forest","SGD classifiers"],0,"بعض الخوارزميات، زي ........................، بيبوظ أداؤها لما حجم الـ training set يكبر.","الإجابة هي <b>Support Vector Machine classifiers</b>."),
+M("ROC is stands for ........",["Return on Capital","Receiver Operating Characteristic","Rate of Change","Receiver on Curve"],1,"ROC اختصار لـ ........","<code>ROC</code> = <b>Receiver Operating Characteristic</b>."),
+T("StratifiedKFold class performs stratified sampling to produce folds that contain a representative ratio of each class",1,"كلاس StratifiedKFold بيعمل stratified sampling لإنتاج folds فيها نسبة ممثلة لكل فئة.","العبارة <b>صحيحة</b>. كل fold بيحتفظ بنسبة كل فئة تقريباً زي الـ dataset الأصلية."),
+T("A perfect classifier would have only true positives and false negatives",0,"المصنّف المثالي مش هيكون عنده غير true positives و false negatives.","العبارة <b>خاطئة</b>. المصنّف المثالي مفيهوش أي أخطاء، يعني عنده <b>true positives و true negatives</b> بس، ومفيهوش false negatives."),
+T("in MINIST Dataset , A Data key containing an array with one row per sample and two column per feature.",0,"في MINIST، المفتاح Data فيه مصفوفة بصف لكل عينة وعمودين لكل feature.","العبارة <b>خاطئة</b>. المفتاح <code>data</code> فيه صف لكل عينة و<b>عمود واحد</b> لكل feature."),
+M("What is the ROC AUC of a purely random classifier",["0","1","0.5","none of them"],2,"كام قيمة الـ ROC AUC لمصنّف عشوائي تماماً؟","المصنّف العشوائي بيطلّع <code>AUC = 0.5</code>، يعني مفيش قدرة على التمييز.","الـ 1 للمصنّف المثالي."),
+M("Which of the following algorithms is NOT capable of handling multiple classes natively",["Logistic regression","Random Forest","Naive Bayes classifiers","SGD classifiers"],0,"أي من الخوارزميات دي مش قادرة على التعامل مع فئات متعددة بشكل مباشر (natively)؟","الإجابة هي <b>Logistic regression</b>: من الخوارزميات اللي بتتعامل مع فئتين (binary) بشكل أساسي.","Random Forest و Naive Bayes و SGD classifiers بتتعامل مع فئات متعددة."),
+M("MINIST Dataset is actually already split into a training set (the first ...............images) and a test set (the last ............ images)",["6000 , 1000","600000 , 10000","60000 , 100000","60000 , 10000"],3,"الـ MINIST متقسمة بالفعل لـ training set (أول ............... صورة) و test set (آخر ............ صورة).","الصح هو <b>60,000 للتدريب و 10,000 للاختبار</b>."),
+M("If that threshold is greater than a score, it assigns the instance to the ............",["both of them","none of them","positive class","negative class"],3,"لو الـ threshold أكبر من الـ score، المصنّف بيصنّف الحالة على إنها ............","لو الـ threshold أكبر من الـ score يتصنّف المثال كـ <b>negative class</b>.","العكس: لو الـ score أكبر من الـ threshold يبقى positive class."),
+M("SGDClassifier computes a score based on a ............. function",["none of them","Precision","F1-score","decision"],3,"الـ SGDClassifier بيحسب score بناءً على دالة ............. (function).","بيحسب الـ score بناءً على <b>decision function</b>."),
+M("Increasing precision ........ recall, and vice versa.",["reduces","increases","none of them","not infulence"],0,"زيادة الـ precision ........ الـ recall، والعكس صحيح.","زيادة الـ precision <b>بتقلل (reduces)</b> الـ recall والعكس، وده الـ precision/recall trade-off.")
+];
+
+const NS1=[
+M("Numerical methods are mainly used to:",["Find exact analytical solutions","Find approximate solutions to complex problems","Eliminate all types of errors","Avoid mathematical modeling"],1,"الطرق العددية بتُستخدم أساساً من أجل:","الطرق العددية (Numerical methods) بتدّي <b>حلول تقريبية</b> للمسائل المعقدة اللي صعب أو مستحيل حلها تحليلياً.","هي مش بتعطي حلولاً تحليلية دقيقة، ومش بتلغي الأخطاء، لكنها بتتحكم فيها وتقلل تأثيرها."),
+M("Modelling errors occur because:",["The computer rounds numbers","Humans make careless mistakes","Mathematical equations approximate physical systems","The calculator battery is weak"],2,"أخطاء النمذجة (Modelling errors) بتحصل بسبب:","المعادلات الرياضية <b>بتقرّب النظام الفيزيائي</b> الحقيقي ومش بتمثّله بدقة كاملة، فبيظهر خطأ في النموذج نفسه.","تقريب الكمبيوتر للأرقام ده Round-off error، والأخطاء الناتجة عن الإهمال البشري هي Blunders."),
+M("Blunders are caused by:",["Floating-point arithmetic","Human carelessness","Taylor series expansion","Truncation processes"],1,"الـ Blunders (الأخطاء الجسيمة) سببها:","الـ Blunders بتحصل بسبب <b>إهمال الإنسان</b>، زي كتابة رقم غلط أو خطأ في الحساب.","الـ Floating-point مصدره الـ round-off، والـ Taylor series والـ truncation مصدرهم الـ truncation error."),
+M("Programming errors are classified as:",["Modelling errors","Inherent errors","Mistakes","Round-off errors"],2,"أخطاء البرمجة بتتصنّف على إنها:","أخطاء البرمجة تُعتبر <b>Mistakes</b> (أخطاء بشرية)، يعني من نفس فئة الـ blunders.","Round-off و Modelling و Inherent لهم مصادر تانية مش برمجية."),
+M("Round-off errors occur because:",["Infinite series are truncated","Computers store finite digits","Humans miscalculate","Models are inaccurate"],1,"أخطاء التقريب (Round-off) بتحصل لأن:","الكمبيوتر <b>بيخزّن عدد محدود من الأرقام</b> (finite digits)، فأي رقم أطول من كده بيتقرّب.","اقتطاع المتسلسلات اللانهائية ده Truncation error."),
+M("A chop-off error happens when:",["A number is rounded properly","Extra digits are discarded without rounding","Taylor series is applied","Data is measured inaccurately"],1,"خطأ الـ chop-off بيحصل لما:","بيحصل لما <b>الأرقام الزيادة بتتشال (discarded) بدون تقريب</b>، يعني بنقطع الرقم عند عدد معين من الخانات.","لو الرقم اتقرّب صح يبقى ده rounding مش chopping."),
+M("Relative error is obtained by dividing absolute error by:",["Approximate value","100","True (exact) value","10"],2,"بنحصل على الخطأ النسبي (Relative error) بقسمة الخطأ المطلق على:","<code>Relative error = Absolute error ÷ True value</code>، يعني بنقسم على <b>القيمة الحقيقية (الدقيقة)</b>.","القسمة على 100 هي خطوة تانية لتحويله لنسبة مئوية."),
+M("Percentage relative error equals:",["Relative error ÷ 100","Absolute error × 100","Relative error × 100","Absolute error ÷ 100"],2,"النسبة المئوية للخطأ النسبي تساوي:","<code>Percentage relative error = Relative error × 100</code>."),
+M("If the condition number is equal to 1, then:",["Error is amplified","Error is attenuated","No amplification or attenuation","The function is ill-conditioned"],2,"لو الـ condition number يساوي 1 يبقى:","لما <code>condition number = 1</code> الخطأ <b>لا بيتضخّم ولا بيقل</b> (No amplification or attenuation).","لو أكبر من 1 الخطأ بيتضخّم، ولو أقل من 1 الخطأ بيقل."),
+M("If the condition number is greater than 1, the problem is:",["Well-conditioned","Error reducing","Error amplifying","Exact"],2,"لو الـ condition number أكبر من 1 تبقى المسألة:","لما يكون أكبر من 1 فالمسألة <b>بتضخّم الخطأ (Error amplifying)</b>.",""),
+M("A very large condition number indicates the function is:",["Stable","Ill-conditioned","Exact","Linear"],1,"الـ condition number الكبير جداً يدل على إن الدالة:","الـ condition number الكبير جداً معناه إن الدالة <b>Ill-conditioned</b>، يعني حساسة جداً للأخطاء الصغيرة في المدخلات.",""),
+M("Truncation errors occur when:",["A finite process replaces an infinite process","Numbers are rounded","Data is entered incorrectly","Hardware fails"],0,"أخطاء الاقتطاع (Truncation) بتحصل لما:","بتحصل لما <b>عملية محدودة (finite) بتحل محل عملية لانهائية (infinite)</b>، زي قطع متسلسلة Taylor عند عدد محدود من الحدود.",""),
+M("Accuracy refers to:",["Agreement among repeated values","Closeness to the true value","Speed of computation","Number of iterations"],1,"الدقة (Accuracy) معناها:","الـ Accuracy هي <b>مدى قرب القيمة من القيمة الحقيقية</b>.","الاتفاق بين القيم المتكررة ده تعريف الـ Precision."),
+M("Precision refers to:",["Closeness to true value","Systematic bias","Agreement among repeated values","Absolute error"],2,"الـ Precision معناها:","الـ Precision هي <b>اتفاق القيم المتكررة مع بعضها</b> (قلة التشتت بينها).","القرب من القيمة الحقيقية ده الـ Accuracy."),
+M("Chop-off error differs from rounding because it:",["Adds digits","Discards digits without rounding","Uses Taylor series","Reduces precision intentionally"],1,"خطأ الـ chop-off بيختلف عن الـ rounding لأنه:","الـ chop-off <b>بيشيل الأرقام الزيادة بدون تقريب</b>، أما الـ rounding فبيقرّب الرقم لأقرب قيمة.",""),
+M("If relative error = 0.01, percentage relative error =",["0.1%","10%","1%","100%"],2,"لو الخطأ النسبي = 0.01 تبقى النسبة المئوية للخطأ النسبي =","<code>0.01 × 100 = 1%</code>.",""),
+M("Significant digits represent:",["Total digits in number","Digits used with confidence","Decimal places only","Integer part only"],1,"الأرقام المعنوية (Significant digits) بتمثّل:","هي <b>الأرقام اللي بنستخدمها بثقة</b> (اللي نقدر نعتمد عليها).","هي مش إجمالي الأرقام ولا الخانات العشرية بس."),
+M("Inaccuracy is also called:",["Precision","Bias","Truncation","Rounding"],1,"عدم الدقة (Inaccuracy) بيتسمى كمان:","الـ Inaccuracy هو <b>Bias</b> (الانحراف المنتظم عن القيمة الحقيقية).",""),
+M("Imprecision refers to:",["Systematic deviation","Scatter of values","Programming error","True value"],1,"عدم الـ Precision (Imprecision) معناه:","الـ Imprecision هو <b>تشتت القيم (Scatter)</b> حوالين بعضها.","الانحراف المنتظم ده الـ Bias (inaccuracy)."),
+M("Condition number measures:",["Absolute error","Amplification of input errors","Machine precision","Modeling quality"],1,"الـ Condition number بيقيس:","بيقيس <b>تضخيم أخطاء المدخلات</b> في المخرجات.",""),
+M("Machine arithmetic errors include:",["Modeling errors","Rounding and chopping","Bias","Blunders"],1,"أخطاء الحساب في الآلة (Machine arithmetic errors) بتشمل:","بتشمل <b>التقريب (Rounding) والقطع (Chopping)</b> لأن الجهاز بيخزّن عدد محدود من الأرقام.",""),
+M("Numerical methods are useful when analytical solutions are:",["Easy","Simple","Impossible or complex","Exact"],2,"الطرق العددية مفيدة لما الحلول التحليلية تكون:","بتفيد لما الحل التحليلي يكون <b>مستحيل أو معقد</b>.",""),
+M("If absolute error is zero, the approximation is:",["Incorrect","Exact","Rounded","Ill-conditioned"],1,"لو الخطأ المطلق صفر يبقى التقريب:","الخطأ المطلق = صفر معناه إن القيمة التقريبية <b>تساوي القيمة الحقيقية (Exact)</b>.",""),
+M("Percentage error is useful because it:",["Standardizes error comparison","Increases error","Removes error","Reduces digits"],0,"النسبة المئوية للخطأ مفيدة لأنها:","بتخلّي مقارنة الأخطاء <b>موحّدة (Standardizes)</b> بين قيم مختلفة الحجم.",""),
+M("Increasing stored digits generally:",["Increases round-off error","Decreases round-off error","Removes truncation","Increases bias"],1,"زيادة عدد الأرقام المخزّنة عادةً:","زيادة عدد الخانات بتخلي التقريب أدق، فـ <b>بتقلل الـ round-off error</b>.","مش بتشيل الـ truncation error لأنه مرتبط بالطريقة نفسها."),
+M("Chopping usually produces error:",["Smaller than rounding","Larger than rounding","Equal to rounding","Zero"],1,"الـ Chopping عادةً بيطلّع خطأ:","الـ chopping بيقطع الأرقام بدون تقريب، فخطأه <b>أكبر من خطأ الـ rounding</b>.",""),
+M("A well-conditioned function has condition number:",["Very large","Close to 1","Infinite","Zero always"],1,"الدالة الـ well-conditioned عندها condition number:","الدالة الجيدة الشرط (well-conditioned) condition number بتاعها <b>قريب من 1</b>.",""),
+M("Ill-conditioned problems are:",["Stable","Insensitive","Highly sensitive to small errors","Exact"],2,"المسائل الـ Ill-conditioned بتكون:","<b>حساسة جداً للأخطاء الصغيرة</b>، فتغيير بسيط في المدخلات بيعمل تغيير كبير في الناتج.",""),
+M("The ratio of relative output error to relative input error defines:",["Absolute error","Precision","Condition number","Bias"],2,"النسبة بين الخطأ النسبي في المخرجات والخطأ النسبي في المدخلات بتعرّف:","ده تعريف الـ <b>Condition number</b>.",""),
+M("Mathematical approximation errors are also called:",["Round-off","Inherent","Truncation","Bias"],2,"أخطاء التقريب الرياضي بتتسمى كمان:","أخطاء التقريب الرياضي (زي قطع المتسلسلة) هي <b>Truncation errors</b>.",""),
+M("A function reduces input errors if condition number:",[">1","<1","=0 always","Infinite"],1,"الدالة بتقلل أخطاء المدخلات لو الـ condition number:","لو <code>condition number &lt; 1</code> فالدالة <b>بتقلل (attenuates)</b> أخطاء المدخلات.","أكبر من 1 بيضخّمها."),
+M("Significant digits depend on:",["Relative error size","Absolute value only","Integer part","Units"],0,"الأرقام المعنوية بتعتمد على:","بتعتمد على <b>حجم الخطأ النسبي (Relative error)</b>.",""),
+M("Inherent errors can be minimized by:",["Ignoring data","Using better data and higher precision","Deleting decimals","Avoiding computers"],1,"الأخطاء الموروثة (Inherent errors) ممكن نقللها عن طريق:","بنقللها باستخدام <b>بيانات أفضل ودقة أعلى</b>.","تجاهل البيانات أو حذف الكسور مش بيقلل الخطأ."),
+];
+
+const NS2=[
+M("In Doolittle’s method, the matrix A is decomposed into:",["A = LLᵀ","A=LU where diagonal elements of L are 1","A = UL","A = LDU"],1,"في طريقة Doolittle بتتحلّل المصفوفة A إلى:","في <b>Doolittle</b> بنحلّل <code>A = LU</code> بحيث العناصر القطرية للمصفوفة <b>L</b> كلها <b>1</b>.","الصيغة <code>A = LLᵀ</code> هي Cholesky."),
+M("In Crout’s method, the diagonal elements of which matrix are equal to 1?",["L","U","Both L and U","None"],1,"في طريقة Crout، العناصر القطرية لأي مصفوفة بتساوي 1؟","في <b>Crout</b> العناصر القطرية للمصفوفة <b>U</b> هي اللي بتساوي 1، أما <b>L</b> فعناصرها القطرية عادية.","في Doolittle العكس: القطر 1 في L."),
+M("The main difference between Doolittle’s and Crout’s methods is:",["Number of equations solved","Whether pivoting is required","Location of unit diagonal elements","Type of matrix"],2,"الفرق الأساسي بين طريقتي Doolittle و Crout هو:","الفرق في <b>مكان العناصر القطرية اللي بتساوي 1</b>: في L عند Doolittle، وفي U عند Crout.",""),
+M("The Thomas Algorithm is specifically designed for:",["Dense matrices","Symmetric matrices","Tridiagonal systems","Singular systems"],2,"خوارزمية Thomas مصممة خصيصاً لـ:","خوارزمية Thomas بتحل <b>الأنظمة ثلاثية الأقطار (Tridiagonal systems)</b> بسرعة وبعدد عمليات قليل.",""),
+M("A tridiagonal matrix has non-zero elements:",["Only on main diagonal","On main diagonal and two adjacent diagonals","On first row only","Everywhere"],1,"المصفوفة ثلاثية الأقطار (tridiagonal) عناصرها غير الصفرية بتكون:","بتكون على <b>القطر الرئيسي والقطرين المجاورين له</b> (فوقه وتحته)، وباقي العناصر أصفار.",""),
+M("Jacobi’s method is an example of:",["Direct method","Decomposition method","Iterative method","Elimination method"],2,"طريقة Jacobi مثال على:","<b>Iterative method</b> (طريقة تكرارية): بتبدأ بتخمين مبدئي وتحسّنه في كل تكرار.",""),
+M("In Jacobi’s method, the new values are computed using:",["Updated values immediately","Only old values from previous iteration","Determinant","LU decomposition"],1,"في طريقة Jacobi بتتحسب القيم الجديدة باستخدام:","بتتحسب باستخدام <b>القيم القديمة من التكرار السابق فقط</b>.","استخدام القيم الجديدة فوراً ده Gauss-Seidel."),
+M("In Gauss-Seidel method, the new values are:",["Not used","Used only at the end","Used immediately after computation","Ignored"],2,"في طريقة Gauss-Seidel القيم الجديدة بتتـ:","بتتستخدم <b>فوراً بعد ما تتحسب</b> في حساب باقي المتغيرات في نفس التكرار.",""),
+M("For convergence of Jacobi and Gauss-Seidel methods, a sufficient condition is:",["Singular matrix","Zero determinant","Diagonal dominance","Upper triangular matrix"],2,"شرط كافي لتقارب (convergence) طريقتي Jacobi و Gauss-Seidel هو:","الشرط الكافي هو <b>Diagonal dominance</b> (السيادة القطرية).",""),
+M("Which method generally converges faster?",["Jacobi","Gauss-Seidel","Both same","Thomas"],1,"أي طريقة بتتقارب أسرع عادةً؟","<b>Gauss-Seidel</b> عادةً أسرع لأنها بتستخدم القيم المحدثة فوراً.","Jacobi بتستنى لحد نهاية التكرار."),
+M("Iterative methods are preferred when:",["Matrix size is small","Matrix is 2×2","Matrix size is very large","Determinant is zero"],2,"بنفضّل الطرق التكرارية لما:","لما <b>حجم المصفوفة كبير جداً</b>، لأن الطرق المباشرة بتبقى مكلفة.",""),
+M("In Doolittle’s method, the diagonal elements of L are:",["Zero","One","Arbitrary","Equal to U"],1,"في طريقة Doolittle العناصر القطرية للمصفوفة L بتكون:","بتكون <b>One</b> (يعني 1).",""),
+M("LU decomposition fails when:",["Matrix is diagonal","Matrix is singular","Matrix is symmetric","Matrix is triangular"],1,"التحليل LU بيفشل لما:","بيفشل لما المصفوفة <b>singular</b> (محددها صفر).","المصفوفة القطرية والمثلثية والمتماثلة مفيهاش مشكلة."),
+M("A tridiagonal matrix has how many non-zero diagonals?",["1","2","3","4"],2,"المصفوفة ثلاثية الأقطار فيها كام قطر غير صفري؟","فيها <b>3 أقطار</b>: الرئيسي + اللي فوقه + اللي تحته.",""),
+M("Direct methods give:",["Approximate solution only","Exact solution (subject to rounding error)","Infinite solutions","No solution"],1,"الطرق المباشرة (Direct methods) بتدّي:","بتدّي <b>حل دقيق</b> في عدد محدد من الخطوات، مع احتمال أخطاء تقريب (rounding) بسيطة.",""),
+M("A sufficient condition for convergence is:",["Zero determinant","Diagonal dominance","Upper triangular matrix","Symmetric matrix only"],1,"الشرط الكافي للتقارب هو:","<b>Diagonal dominance</b> (السيادة القطرية).",""),
+M("Strict diagonal dominance means:",["|aᵢᵢ| ≥ ∑ aᵢⱼ","|aᵢᵢ| > ∑ aᵢⱼ","|aᵢᵢ| < ∑ aᵢⱼ","All diagonal elements are 1"],1,"السيادة القطرية الصارمة (Strict diagonal dominance) معناها:","معناها إن القيمة المطلقة للعنصر القطري <b>أكبر تماماً (&gt;)</b> من مجموع باقي عناصر الصف.","الـ ≥ ده diagonal dominance العادية مش الصارمة."),
+M("Iterative methods are useful when:",["Matrix size is very small","Matrix is singular","Matrix size is large and sparse","Determinant is 1"],2,"الطرق التكرارية مفيدة لما:","لما المصفوفة <b>كبيرة وsparse</b> (معظم عناصرها أصفار).",""),
+M("The stopping criterion in iterative methods is based on:",["Determinant","Number of equations","Error tolerance","Matrix rank"],2,"معيار التوقف في الطرق التكرارية بيعتمد على:","بيعتمد على <b>Error tolerance</b>: بنوقف لما الفرق بين تكرارين يبقى أقل من حد مسموح.",""),
+M("Jacobi method updates all variables:",["Simultaneously after iteration","One by one immediately","Randomly","Never"],0,"طريقة Jacobi بتحدّث كل المتغيرات:","<b>في نفس الوقت بعد انتهاء التكرار</b>.","التحديث واحد واحد فوراً ده Gauss-Seidel."),
+M("Iterative methods may fail if:",["Matrix is diagonally dominant","Matrix is well-conditioned","Matrix is not diagonally dominant","Matrix is triangular"],2,"الطرق التكرارية ممكن تفشل لو:","ممكن تفشل لو <b>المصفوفة مش diagonally dominant</b> لأن شرط التقارب مش متحقق.",""),
+M("Which method requires initial guess?",["Doolittle","Thomas","Jacobi","LU decomposition"],2,"أي طريقة بتحتاج تخمين مبدئي (initial guess)؟","<b>Jacobi</b> لأنها طريقة تكرارية.","Doolittle و Thomas و LU طرق مباشرة."),
+M("LU decomposition transforms A into:",["Product of diagonal matrices","Lower and upper triangular matrices","Identity matrix","Zero matrix"],1,"التحليل LU بيحوّل A إلى:","بيحوّلها لحاصل ضرب <b>مصفوفة مثلثية سفلية (L) ومثلثية علوية (U)</b>.",""),
+M("In Doolittle’s method, the first row of matrix U is obtained from:",["Back substitution","First row of A directly","Column operations","Determinant expansion"],1,"في Doolittle الصف الأول من المصفوفة U بيتحدد من:","بيساوي <b>الصف الأول من A مباشرةً</b> (u₁ⱼ = a₁ⱼ).",""),
+M("Which of the following matrices is suitable for the Thomas algorithm?",["Full matrix","Banded matrix with three non-zero diagonals","Identity matrix only","Singular matrix"],1,"أي من المصفوفات دي مناسب لخوارزمية Thomas؟","المصفوفة <b>الـ banded اللي فيها 3 أقطار غير صفرية</b> (tridiagonal).",""),
+M("In Gauss-Seidel method, if the system is strictly diagonally dominant, the method:",["Diverges","Always converges","Oscillates","Has no solution"],1,"في Gauss-Seidel، لو النظام strictly diagonally dominant فالطريقة:","<b>بتتقارب دايماً (Always converges)</b>.",""),
+M("Direct methods are preferred over iterative methods when:",["Very large sparse systems","High accuracy is required in finite steps","Initial guess is unknown","Matrix is diagonally dominant only"],1,"بنفضّل الطرق المباشرة على التكرارية لما:","لما نحتاج <b>دقة عالية في عدد محدد من الخطوات</b>.","الأنظمة الكبيرة الـ sparse بتفضّل فيها التكرارية."),
+];
+
+const N2=[
+{q:"Which protocol operates at the Transport layer as a connection-oriented and reliable protocol?",o:["UDP","TCP","ICMP","IP"],a:1,ar:"أي بروتوكول بيشتغل في طبقة الـ Transport وهو connection-oriented وموثوق (reliable)؟",why:"<b>TCP</b> بيعمل اتصال قبل الإرسال (three-way handshake) وبيضمن وصول البيانات بالترتيب وبيعيد إرسال المفقود.",no:"UDP بدون اتصال وغير موثوق، و IP و ICMP في طبقة الـ Network."},
+N('frame',["Segment","Packets","Bits","Frame"],3),
+N('pres',["Transport Layer","Session Layer","Application Layer","Presentation Layer"],3),
+N('arp',["ICMP","ARP","TCP","RARP"],1),
+N('macbits',["32 bits","16 bits","64 bits","48 bits"],3),
+N('tcpip',["5 layers","7 layers","6 layers","4 layers"],3),
+N('macLayer',["Transport Layer","Physical Layer","Network Layer","Data Link Layer"],3),
+N('physDev',["Firewalls","NIC Card and Hubs","Routers and Switches","Cables and Network Media (Wired/Wireless)"],3),
+N('netLayer',["Data Link Layer","Physical Layer","Transport Layer","Network Layer"],3),
+N('ospf',["HTTP","OSPF","SMTP","FTP"],1)
+];
+
 const app = document.getElementById('app');
 const L = ['A','B','C','D'];
 const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
@@ -412,13 +530,29 @@ const blankify = s => esc(s).replace(/[.…]{3,}/g,'<span class="blank"></span>'
 /* ضيف مواد أو كويزات جديدة هنا */
 const SUBJECTS = [
   {id:'ml', sym:'ML', name:'Machine Learning', ar:'تعلّم الآلة',
-   quizzes:[ {id:'quiz1', title:'quiz 1', questions:Q}, {id:'quiz2', title:'quiz 2', questions:Q2}, {id:'quiz3', title:'quiz 3', questions:Q3} ]},
+   quizzes:[ {id:'quiz1', title:'quiz 1', questions:Q}, {id:'quiz2', title:'quiz 2', questions:Q2}, {id:'quiz3', title:'quiz 3', questions:Q3}, {id:'quiz4', title:'quiz 4', questions:Q4} ]},
   {id:'net', sym:'NET', name:'Network', ar:'الشبكات',
-   quizzes:[ {id:'quiz1', title:'quiz 1', questions:N1} ]}
+   quizzes:[ {id:'quiz1', title:'quiz 1', questions:N1}, {id:'quiz2', title:'quiz 2', questions:N2} ]},
+  {id:'num', sym:'NUM', name:'Numerical', ar:'التحليل العددي', quizzes:[ {id:'sheet1', kind:'sheet', title:'sheet 1', questions:NS1}, {id:'sheet2', kind:'sheet', title:'sheet 2', questions:NS2} ]}
 ];
+const shuf = {};            // نسخة الأسئلة بعد ترتيب الاختيارات عشوائي (ثابتة طول الجلسة)
+function shuffled(qs){
+  return qs.map(q=>{
+    const items=q.o.map((t,i)=>({t,ok:i===q.a}));
+    for(let i=items.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
+    return {...q,o:items.map(x=>x.t),a:items.findIndex(x=>x.ok)};
+  });
+}
 const saved = {};           // الإجابات بتتحفظ طول ما الصفحة مفتوحة
 let st = {view:'home', sub:null, quiz:null};
 
+function kindCount(s){
+  const n=s.quizzes.length; if(!n) return 'Nothing yet';
+  const sh=s.quizzes.filter(q=>q.kind==='sheet').length, qz=n-sh, out=[];
+  if(qz) out.push(qz+(qz>1?' quizzes':' quiz'));
+  if(sh) out.push(sh+(sh>1?' sheets':' sheet'));
+  return out.join(' · ');
+}
 function bar(backLabel){
   return `<div class="bar"><span class="brand">quiestions</span>${backLabel?`<button class="back" id="backBtn">${backLabel}</button>`:''}</div>`;
 }
@@ -456,7 +590,7 @@ function home(){
   <div class="quizlist">${SUBJECTS.map(s=>`
     <button class="subject subj-btn" data-sub="${s.id}">
       <span class="subject-head"><span class="sym" aria-hidden="true">${s.sym}</span>
-      <span><span class="h2">${s.name}</span><span class="sub">${s.quizzes.length} quiz${s.quizzes.length>1?'zes':''}</span></span></span>
+      <span><span class="h2">${s.name}</span><span class="sub">${kindCount(s)}</span></span></span>
       <span class="pill">Open</span>
     </button>`).join('')}</div>`;
   document.querySelectorAll('[data-sub]').forEach(b=>b.onclick=()=>go('subject',b.dataset.sub));
@@ -468,16 +602,17 @@ function subject(){
   <div class="subject-head" style="margin-top:24px"><div class="sym" aria-hidden="true">${s.sym}</div>
   <div><h1 style="margin:0;direction:ltr;text-align:left">${s.name}</h1></div></div>
   <div style="height:20px"></div>
-  <div class="quizlist">${s.quizzes.map(q=>{
+  <div class="quizlist">${s.quizzes.length?'':'<p class="lead" style="margin:0">Nothing here yet.</p>'}${s.quizzes.map(q=>{
     const a=saved[s.id+q.id]||[]; const d=a.filter(x=>x!==undefined&&x!==null).length;
-    const r=q.questions.filter((x,k)=>a[k]===x.a).length;
+    const r=(shuf[s.id+q.id]||q.questions).filter((x,k)=>a[k]===x.a).length;
     return `<button class="quizbtn" data-quiz="${q.id}"><b>${q.title}</b><span>${q.questions.length} questions${d?` · ${d} answered (${r} correct)`:''}</span><span class="pill">${d?'Continue':'Start'}</span></button>`}).join('')}</div>`;
   document.getElementById('backBtn').onclick=()=>go('home');
   document.querySelectorAll('[data-quiz]').forEach(b=>b.onclick=()=>go('quiz',s.id,b.dataset.quiz));
 }
 
 function quiz(){
-  const s = SUBJECTS.find(x=>x.id===st.sub), z = s.quizzes.find(x=>x.id===st.quiz), Qs = z.questions, key = s.id+z.id;
+  const s = SUBJECTS.find(x=>x.id===st.sub), z = s.quizzes.find(x=>x.id===st.quiz), key = s.id+z.id;
+  const Qs = shuf[key] = shuf[key] || shuffled(z.questions);
   const ans = saved[key] = saved[key] || Array(Qs.length).fill(null);
   let cur=0;
   let rowMode=false; try{rowMode=localStorage.getItem('dotsRow')==='1'}catch(e){}
@@ -539,7 +674,7 @@ function quiz(){
       const msg='';
       f.innerHTML=`<div class="qcard"><div class="qnum">Result</div><div class="score">${r}/${Qs.length}</div><p style="margin:0;font-weight:600">${pct}%</p>
         <div class="next"><button class="btn ghost" id="again">Retry</button><button class="btn" id="toSub">Back to ${s.name}</button></div></div>`;
-      document.getElementById('again').onclick=()=>{saved[key]=null;go('quiz',s.id,z.id)};
+      document.getElementById('again').onclick=()=>{saved[key]=null;shuf[key]=null;go('quiz',s.id,z.id)};
       document.getElementById('toSub').onclick=()=>go('subject',s.id);
     } else f.innerHTML='';
   }
@@ -601,5 +736,3 @@ function render(){ ({home,subject,quiz})[st.view](); if(st.view==='home')bg.star
 document.documentElement.lang='en'; document.documentElement.dir='ltr';
 render();
 </script>
-
-</body></html>
