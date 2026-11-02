@@ -122,6 +122,52 @@ h1{font-size:clamp(28px,6vw,40px);line-height:1.25;margin:28px 0 6px;font-weight
 .rv.ok .n{background:var(--ok)} .rv.bad .n{background:var(--bad)}
 .rv span{direction:ltr;text-align:left;flex:1;min-width:0;overflow-wrap:anywhere}
 @media (prefers-reduced-motion:reduce){.fill{transition:none}}
+
+/* ===== Mobile fit: الصفحة الرئيسية تتحط في شاشة الموبايل من غير سكرول، والباقي مقاساته مظبوطة ===== */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{overflow-wrap:anywhere}
+button,.dot{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.wrap{min-width:0;width:100%}
+.subj-btn>.subject-head{min-width:0;flex:1}
+@media (max-width:600px){
+  body{font-size:15px;line-height:1.6;padding-block:0 20px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px))}
+  .bar{padding-block:10px 2px}
+  .brand{font-size:13px}
+  .back{padding:3px 12px;font-size:13px}
+  h1{font-size:24px;margin:14px 0 4px}
+  .hero{font-size:clamp(30px,10.5vw,46px);margin:max(26px,env(safe-area-inset-top,0px)) 0 18px}
+  .quizlist{gap:8px}
+  .subject{padding:12px 14px;border-radius:14px;gap:0}
+  .subject-head{gap:12px}
+  .sym{width:42px;height:42px;font-size:16px;border-radius:10px}
+  .subj-btn .h2{font-size:17px}
+  .subj-btn .sub{font-size:12px}
+  .pill{padding:2px 10px;font-size:12px}
+  .quizbtn{padding:11px 13px;gap:8px}
+  .quizbtn b{font-size:15px}
+  .quizbtn span{font-size:12.5px}
+  .prog{padding-block:6px 8px}
+  .prog-top{font-size:12.5px;margin-bottom:6px}
+  .dot{min-width:26px;height:26px;font-size:11px}
+  #list{gap:12px}
+  .qcard{padding:14px;border-radius:14px}
+  .qtext{font-size:16.5px;margin-bottom:14px}
+  .opts{gap:8px}
+  .opt{font-size:15px;padding:9px 11px;gap:10px}
+  .opt .k{width:26px;height:26px;font-size:13px}
+  .opt .mark{font-size:11.5px}
+  .verdict{padding:10px 14px;font-size:15px}
+  .ex-body{padding:4px 14px 12px;gap:10px}
+  .ex-body p{font-size:14.5px}
+  .btn{padding:10px 16px;font-size:15px}
+  .score{font-size:46px}
+}
+@media (max-width:600px) and (max-height:680px){
+  .hero{font-size:clamp(26px,9vw,38px);margin:2px 0 10px}
+  .subject{padding:9px 12px}
+  .sym{width:36px;height:36px;font-size:14px}
+  .subj-btn .h2{font-size:16px}
+}
 </style>
 
 <canvas id="bg" aria-hidden="true"></canvas>
@@ -686,6 +732,82 @@ M("What is the minimum ratio test used for in the simplex method?",["To determin
 M("What is the primary purpose of adding a slack variable to a \"≤\" constraint in the simplex method?",["Both representing an excess above a requirement and converting the inequality into an equation","To represent an excess above a requirement","To convert the inequality into an equation","To represent unused resource"],2,"إيه الغرض الأساسي من إضافة slack variable لقيد من نوع \"≤\" في السمبلكس؟","الغرض الأساسي هو <b>تحويل المتباينة لمعادلة</b>، لأن السمبلكس بيشتغل على معادلات.","الـ slack بيمثّل برضه الموارد غير المستخدمة، لكن الإجابة المعتمدة في الشيت هي تحويل المتباينة لمعادلة. أما \"الزيادة فوق الحد المطلوب\" فده الـ surplus."),
 ];
 
+/* ===== ML quiz 5 (من ملف ML_Questions_Answers.pdf) ===== */
+const D=(q,k)=>({...q,k});
+const Q5=[
+T("Machine Learning is the field of study that gives computers the ability to learn with being explicitly programmed.",0,"الـ Machine Learning هو مجال دراسة بيدّي الكمبيوتر القدرة على التعلّم (with) كونه مبرمج بشكل صريح.","العبارة <b>خاطئة</b>. التعريف الصح إن الـ ML بيدّي الكمبيوتر القدرة على التعلّم <b>من غير (without)</b> ما يتبرمج بشكل صريح. العبارة هنا فيها كلمة <code>with</code> بدل <code>without</code> فبتقلب المعنى."),
+T("ML is Great for Complex problems for which using a traditional approach yields no good solution.",0,"الـ ML ممتاز للمسائل المعقدة اللي الطريقة التقليدية (traditional approach) مبتديش فيها حل كويس.","الإجابة المعتمدة في الشيت: <b>خاطئة</b>.","ملاحظة: الجملة دي بتتكرر في أسئلة تانية في نفس الشيت (Q22 و Q50) على إنها من مميزات الـ ML، فاحفظ الإجابة زي ما هي في الشيت."),
+M("Which machine learning technique is commonly used to make an app react to voice commands?",["CNNs","RNNs","Transformers","All of them are true"],3,"أي تقنية Machine Learning بتُستخدم عادةً عشان نخلّي التطبيق يتفاعل مع الأوامر الصوتية؟","التعرّف على الصوت (speech recognition) بيستخدم <code>CNNs</code> و <code>RNNs</code> و <code>Transformers</code> كلهم، فالإجابة <b>All of them are true</b>."),
+M("It occurs when your model is too simple to learn the underlying structure of the data.",["regularization","fitting the Training Data","Overfitting the Training Data","Underfitting the traning data"],3,"بيحصل لما النموذج بتاعك بسيط زيادة عن اللزوم ومش قادر يتعلّم البنية الأساسية للبيانات.","ده الـ <b>Underfitting</b>: النموذج أبسط من إنه يلتقط نمط البيانات، فأداؤه ضعيف حتى على الـ training data نفسها.","الـ Overfitting عكسه (النموذج معقد زيادة وبيحفظ البيانات)، والـ regularization هو أسلوب لتقليل الـ overfitting."),
+T("The particular performance measure is called training set, and it is often used in classification tasks.",0,"مقياس الأداء المعيّن بيتسمى training set، وبيُستخدم كتير في مسائل التصنيف.","العبارة <b>خاطئة</b>. مقياس الأداء المستخدم كتير في التصنيف اسمه <code>accuracy</code> (الدقة)، أما الـ <code>training set</code> فهي الأمثلة اللي النظام بيتعلّم منها."),
+M("Recommending a product that a client may be interested in, based on past purchases is .....",["NLP","recommender system","Reinforcement Learning","CNN"],1,"ترشيح منتج ممكن يهم العميل بناءً على مشترياته السابقة هو .....","ده <b>recommender system</b> (نظام التوصيات)، بيتعلّم من سلوك العميل السابق ويرشّح له حاجات شبه اللي اشتراها."),
+M("Summarizing long documents automatically is .....",["text summarization","NLU","All of them are true","regression task"],0,"تلخيص المستندات الطويلة بشكل تلقائي هو .....","ده <b>text summarization</b>، وهو من تطبيقات معالجة اللغات الطبيعية (NLP).","الـ regression بيتوقع قيمة رقمية، ومش ليه علاقة بالتلخيص."),
+M("The particular performance measure is called ...........",["All of them are true","testing set","training set","accuracy"],3,"مقياس الأداء المعيّن بيتسمى ...........","مقياس الأداء اللي بيُستخدم كتير في مسائل التصنيف اسمه <b>accuracy</b> (الدقة).","الـ training set والـ testing set مجموعات بيانات مش مقاييس أداء."),
+M("Analyzing images of products on a production line to automatically classify them ...........",["text classification","natural language processing","image classification","semantic segmentation"],2,"تحليل صور المنتجات على خط الإنتاج لتصنيفها تلقائياً ...........","ده <b>image classification</b>: بنصنّف الصورة كلها في فئة (سليم / معيب مثلاً).","الـ semantic segmentation بيصنّف كل بكسل في الصورة (زي تحديد الورم)."),
+T("In Machine Learning Approach is much longer, easier to maintain, and more accurate.",0,"الـ Machine Learning Approach أطول بكتير، وأسهل في الصيانة، وأدق.","العبارة <b>خاطئة</b>. الـ ML approach <b>أقصر</b> بكتير (كود أقل) وأسهل في الصيانة وأدق. كلمة <code>longer</code> هي الغلط."),
+M("What is the main characteristic of semi-supervised learning?",["The agent can observe the environment","The training set includes desired solutions","The training data is unlabeled","It often has plenty of unlabeled instances and few labeled instances"],3,"إيه الخاصية الأساسية للـ semi-supervised learning؟","الخاصية الأساسية إن فيه <b>أمثلة كتير من غير label وأمثلة قليلة بـ label</b>.","الـ training set اللي فيه الحلول المطلوبة ده supervised، والبيانات من غير labels خالص ده unsupervised، والـ agent اللي بيلاحظ البيئة ده reinforcement."),
+T("If you set a high learning rate, then your system will rapidly adapt to new data, but it will also tend to quickly forget the old data",1,"لو ضبطت learning rate عالي، النظام هيتأقلم بسرعة مع البيانات الجديدة، بس هيميل ينسى البيانات القديمة بسرعة.","العبارة <b>صحيحة</b>. الـ learning rate العالي معناه تأقلم سريع مع الجديد لكن نسيان سريع للقديم. والـ learning rate المنخفض بيخلّي النظام أبطأ في التعلّم لكنه أقل حساسية للضوضاء."),
+M("What are the Solutions for Overfitting?",["Reduce the noise in the training data","Gather more training data","Simplify the mode","All of them are true"],3,"إيه حلول مشكلة الـ Overfitting؟","كل الاختيارات حلول صح: <b>تقليل الضوضاء</b> في بيانات التدريب، و<b>جمع بيانات تدريب أكتر</b>، و<b>تبسيط النموذج</b>. فالإجابة <b>All of them are true</b>."),
+T("In Machine Learning Approach is much shorter, easier to maintain, and more accurate.",1,"الـ Machine Learning Approach أقصر بكتير، وأسهل في الصيانة، وأدق.","العبارة <b>صحيحة</b>. الـ ML approach بيطلّع كود أقصر وأسهل في الصيانة وبيدّي دقة أعلى من الطريقة التقليدية اللي محتاجة قواعد كتير."),
+M("Building an intelligent bot for a game is ......",["clustering","Reinforcement Learning","NLP","recommender system"],1,"بناء بوت ذكي للعبة هو ......","ده <b>Reinforcement Learning</b>: البوت (agent) بيلعب ويحصل على مكافآت أو عقوبات، وبيتعلّم أفضل استراتيجية."),
+M("..........means running an algorithm to find the model parameters that will make it best fit the training data",["All of them are true","testing a model","Training a model","validation a model"],2,"..........معناها تشغيل خوارزمية لإيجاد معاملات النموذج اللي تخليه أنسب ما يكون لبيانات التدريب.","ده <b>Training a model</b> (تدريب النموذج)."),
+M("Google Photos are example of .....",["Supervised Learning","Unsupervised Learning","Semi-Supervised Learning","Reinforcement Learning"],2,"Google Photos مثال على .....","<b>Semi-Supervised Learning</b>: الخدمة بتجمّع صور نفس الشخص تلقائياً (من غير labels)، وبعدين لما تدّيها اسم الشخص مرة واحدة بتسمّي كل صوره.","ده بالظبط وصف الـ semi-supervised: بيانات كتير من غير label وعدد قليل بـ label."),
+T("One of the Solutions for underfitting reduce the regularization hyperparameter.",1,"من حلول الـ underfitting إنك تقلل الـ regularization hyperparameter.","العبارة <b>صحيحة</b>. الـ regularization بيقيّد النموذج، فلو النموذج بيعاني من underfitting بنقلل التقييد ده عشان ياخد حرية أكتر."),
+M("Applying ML techniques to dig into large amounts of data can help discover patterns that were not immediately apparent this called ................",["Machine Learning","Data Mining","All of them are true","The Deep learning Approach"],1,"تطبيق تقنيات الـ ML للتنقيب في كميات كبيرة من البيانات واكتشاف أنماط مش واضحة من أول وهلة بيتسمى ................","ده <b>Data Mining</b> (التنقيب في البيانات)."),
+M("What is the main characteristic of supervised learning?",["The agent can observe the environment","The training data is unlabeled","It often has plenty of unlabeled instances","The training set includes desired solutions"],3,"إيه الخاصية الأساسية للـ supervised learning؟","الـ training set بيحتوي على <b>الحلول المطلوبة (labels)</b>، فالنموذج بيتعلّم من أمثلة معاها الإجابة الصح.","البيانات من غير labels دي خاصية الـ unsupervised."),
+M("It must then learn by itself what is the best strategy, called a policy, to get the most reward over time.",["Supervised Learning","unSupervised Learning","Reinforcement Learning","Semi-Supervised Learning"],2,"لازم بعد كده يتعلّم بنفسه أفضل استراتيجية، بتتسمى policy، عشان ياخد أكبر مكافأة على المدى الطويل.","ده <b>Reinforcement Learning</b>: الـ agent بيتعلّم الـ <code>policy</code> بالتجربة عن طريق المكافآت والعقوبات."),
+D(M("ML is Great for ............",["Problems for which existing solutions require a lot of fine-tuning","Getting insights about complex problems","Complex problems for which using a traditional approach yields no good solution.","All of them are true"],3,"الـ ML ممتاز لـ ............","كل الاختيارات صح: المسائل اللي حلولها الحالية محتاجة fine-tuning كتير، واكتساب رؤى (insights) عن المسائل المعقدة، والمسائل المعقدة اللي الطريقة التقليدية مبتديش فيها حل كويس. فالإجابة <b>All of them are true</b>."),'ml-great-for'),
+M("One of the most challenging of ML If the sample is ........, you will have sampling noise",["All of them are true","fitting","large","too small"],0,"من أصعب تحديات الـ ML: لو العينة ........ هيحصل sampling noise.","الإجابة المعتمدة في الشيت: <b>All of them are true</b>.","المعروف إن العينة <b>الصغيرة جداً (too small)</b> هي اللي بتسبب sampling noise، والعينة الكبيرة لو مش ممثلة كويس ممكن تسبب sampling bias."),
+M("The goal is to simplify the data without losing too much information ......",["clustering","regression task","Dimensionality Reduction","classification"],2,"الهدف هو تبسيط البيانات من غير ما نخسر معلومات كتير ......","ده <b>Dimensionality Reduction</b> (تقليل الأبعاد)، زي خوارزمية <code>PCA</code>."),
+M("What machine learning method is typically employed to detect credit card fraud?",["Anomaly detection","Dimensionality reduction techniques","None of the above","Clustering"],0,"أي طريقة ML بتُستخدم عادةً لاكتشاف الاحتيال في كروت الائتمان؟","<b>Anomaly detection</b> (اكتشاف الشذوذ): بيلاقي العمليات الغريبة اللي بتختلف عن النمط المعتاد."),
+M("What are mini-batches in online learning?",["Individual instances fed to the system","Random instances fed to the system","Large groups of instances fed to the system","Sequential instances fed to the system"],2,"إيه هي الـ mini-batches في الـ online learning؟","الإجابة المعتمدة في الشيت: <b>Large groups of instances fed to the system</b>.","الفكرة إن بدل ما نغذّي النظام بمثال واحد واحد، بنغذّيه بمجموعات صغيرة (mini-batches) من الأمثلة."),
+M("The user can either define .......that measures how good your model is",["cost function","All of them are true","utility function","good function"],2,"ممكن المستخدم يعرّف .......اللي بتقيس إن النموذج كويس قد إيه.","ده <b>utility function</b> (أو fitness function) وبتقيس <b>مدى جودة</b> النموذج.","الـ cost function بتقيس العكس: مدى <b>سوء</b> النموذج."),
+M("It means that the model performs well on the training data, but it does not generalize well.",["fitting the Training Data","Overfitting the Training Data","Bad Data","All of them are true"],1,"معناه إن النموذج بيشتغل كويس على بيانات التدريب، لكنه مبيعمّمش (generalize) كويس.","ده <b>Overfitting</b>: النموذج بيحفظ بيانات التدريب بدل ما يتعلّم النمط العام."),
+M("If your training data is full of errors, outliers, and noise is.......",["Irrelevant Features","Poor Quality Data","Nonrepresentative Training Data","All of them are true"],1,"لو بيانات التدريب مليانة أخطاء وقيم شاذة وضوضاء يبقى دي.......","دي <b>Poor Quality Data</b> (بيانات رديئة الجودة)، فصعب على النظام يلاقي النمط الصح.","الـ Irrelevant Features معناها features مش مفيدة، والـ Nonrepresentative معناها بيانات مش ممثلة للحالات الجديدة."),
+M("What is the main characteristic of reinforcement learning?",["It often has plenty of unlabeled instances and few labeled instances","The agent can observe the environment, select and perform actions, and get rewards in return (or penalties in the form of negative rewards)","The training set includes desired solutions","The training data is unlabeled"],1,"إيه الخاصية الأساسية للـ reinforcement learning؟","الـ <b>agent</b> بيلاحظ البيئة ويختار ويعمل actions ويحصل على <b>مكافآت</b> (أو عقوبات = مكافآت سالبة) في المقابل."),
+M("Automatically flagging offensive comments on discussion forums is application of....",["natural language processing","image classification","text classification","semantic segmentation"],2,"تمييز التعليقات المسيئة تلقائياً في منتديات النقاش هو تطبيق لـ....","ده <b>text classification</b>: بنصنّف النص (مسيء / غير مسيء).","الـ NLP مجال أوسع، والإجابة الأدق هنا هي text classification."),
+T("It is the field of study that gives computers the ability to learn without being explicitly programmed.",1,"هو مجال الدراسة اللي بيدّي الكمبيوتر القدرة على التعلّم من غير ما يتبرمج بشكل صريح.","العبارة <b>صحيحة</b>. ده تعريف الـ Machine Learning."),
+M("Which machine learning application involves speech recognition using RNNs, CNNs, or Transformers?",["Detecting credit card fraud","Making an app react to voice commands","Representing high-dimensional datasets in diagrams","Segmenting clients based on their purchases"],1,"أي تطبيق ML بيشمل التعرّف على الكلام باستخدام RNNs أو CNNs أو Transformers؟","<b>جعل التطبيق يتفاعل مع الأوامر الصوتية</b> (voice commands).","اكتشاف الاحتيال بيستخدم anomaly detection، وتمثيل البيانات عالية الأبعاد بيستخدم dimensionality reduction، وتقسيم العملاء بيستخدم clustering."),
+T("Traditional Approach is good for Problems for which existing solutions require a lot of fine-tuning or long lists of rules.",0,"الطريقة التقليدية (Traditional Approach) كويسة للمسائل اللي حلولها الحالية محتاجة fine-tuning كتير أو قوايم قواعد طويلة.","العبارة <b>خاطئة</b>. المسائل دي بالظبط هي اللي <b>الـ ML</b> بيحلها أحسن، لأن الطريقة التقليدية بتطلّع قواعد كتير ومعقدة وصعب صيانتها."),
+T("One of the Solutions for overfitting Reduce the constraints on the model.",0,"من حلول الـ overfitting إنك تقلل القيود على النموذج.","العبارة <b>خاطئة</b>. حل الـ overfitting هو <b>زيادة</b> القيود (regularization) عشان نبسّط النموذج، وتقليل القيود ده حل للـ underfitting."),
+T("In online learning, if good data is fed to the system, the system's performance will gradually decline",0,"في الـ online learning، لو اتغذّى النظام ببيانات كويسة، أداؤه هيقل تدريجياً.","العبارة <b>خاطئة</b>. لو البيانات كويسة أداء النظام بيتحسّن. اللي بيخلّي الأداء يقل تدريجياً هو تغذية النظام ببيانات <b>سيئة</b>."),
+M("What is the main characteristic of unsupervised learning?",["The training data is unlabeled","It often has plenty of unlabeled instances","The training set includes desired solutions","The agent can observe the environment"],0,"إيه الخاصية الأساسية للـ unsupervised learning؟","بيانات التدريب <b>من غير labels</b> والنظام بيحاول يتعلّم من غير معلم.","الاختيار التاني بيوصف الـ semi-supervised."),
+M("Forecasting your company's revenue next year, based on many performance metrics ...",["regression task","text summarization","NLP","NUL"],0,"توقّع إيرادات شركتك السنة الجاية بناءً على مقاييس أداء كتير ...","ده <b>regression task</b>: بنتوقع قيمة رقمية (الإيرادات)."),
+M("Constraining a model to make it simpler and reduce the risk of overfitting is called ..................",["regularization","feature reduction","Overfitting the Training Data","Underfitting the traning data"],0,"تقييد النموذج لتبسيطه وتقليل خطر الـ overfitting بيتسمى ..................","ده <b>regularization</b>."),
+M("The user can either define ........ that measures how bad it is",["utility function","cost function","good function","All of them are true"],1,"ممكن المستخدم يعرّف ........ بتقيس إن النموذج سيء قد إيه.","ده <b>cost function</b> وبتقيس مدى <b>سوء</b> النموذج، وبنحاول نقلّلها.","الـ utility function بتقيس مدى الجودة."),
+M("The Most Important Unsupervised Learning Algorithms",["Apriori","K-Means","PCA","All of them are true"],3,"أهم خوارزميات الـ Unsupervised Learning","كلهم خوارزميات unsupervised مهمة: <code>Apriori</code> (association rules) و <code>K-Means</code> (clustering) و <code>PCA</code> (dimensionality reduction). فالإجابة <b>All of them are true</b>."),
+T("In Machine Learning Approach is much shorter, easier to maintain, and less accurate.",0,"الـ Machine Learning Approach أقصر بكتير، وأسهل في الصيانة، وأقل دقة.","العبارة <b>خاطئة</b>. الـ ML approach <b>أدق</b> مش أقل دقة."),
+T("The particular performance measure is called accuracy, and it is often used in classification tasks.",1,"مقياس الأداء المعيّن بيتسمى accuracy، وبيُستخدم كتير في مسائل التصنيف.","العبارة <b>صحيحة</b>. الـ <code>accuracy</code> هي نسبة التصنيفات الصح، وأشهر مقياس في مسائل التصنيف."),
+D(M("The examples that the system uses to learn are called the ...........",["training sample","training set","training instance","All of them are true"],3,"الأمثلة اللي النظام بيستخدمها عشان يتعلّم بتتسمى ...........","الأمثلة دي ممكن نسميها <code>training sample</code> أو <code>training instance</code> أو مجموعتها <code>training set</code>، فالإجابة <b>All of them are true</b>."),'training-examples'),
+M("Creating a chatbot or a personal assistant is .....",["NLP","NLU","CNN","NUL"],1,"إنشاء chatbot أو مساعد شخصي هو .....","ده <b>NLU</b> (Natural Language Understanding)، يعني فهم اللغة الطبيعية.","الـ CNN للصور، و NUL مش مصطلح موجود."),
+T("In Traditional Approach is much shorter, easier to maintain, and more accurate.",0,"الـ Traditional Approach أقصر بكتير، وأسهل في الصيانة، وأدق.","العبارة <b>خاطئة</b>. دي مميزات الـ <b>Machine Learning approach</b>، أما الطريقة التقليدية فكودها أطول وأصعب في الصيانة."),
+T("One of the Solutions for underfitting Select a more powerful model, with less parameters.",0,"من حلول الـ underfitting اختيار نموذج أقوى بعدد معاملات (parameters) أقل.","العبارة <b>خاطئة</b>. النموذج الأقوى معناه <b>عدد معاملات أكبر</b> مش أقل."),
+M("what is the Unsupervised Learning Algorithms used in clustring ?",["DBSCAN","HCA","K-Means","All of them are true"],3,"إيه خوارزميات الـ Unsupervised Learning المستخدمة في الـ clustering؟","كلهم بيُستخدموا في الـ clustering: <code>K-Means</code> و <code>DBSCAN</code> و <code>HCA</code> (Hierarchical Cluster Analysis)."),
+M("What is the Steps of Feature Engineering?",["Creating new features, Feature Selection then Feature Extraction","All of them are true","Feature Selection, Feature Extraction then Creating new features","Feature Extraction, Feature Selection then Creating new features"],2,"إيه خطوات الـ Feature Engineering؟","الترتيب الصح: <b>Feature Selection</b> (اختيار أنسب الـ features)، بعدين <b>Feature Extraction</b> (دمج features لعمل feature أنفع)، بعدين <b>Creating new features</b> (جمع بيانات جديدة)."),
+D(M("ML is Great for ............",["Problems for which existing solutions require a less of fine-tuning","Getting insights about easy problems","All of them are true","Complex problems for which using a traditional approach yields no good solution."],3,"الـ ML ممتاز لـ ............","الـ ML ممتاز في <b>المسائل المعقدة اللي الطريقة التقليدية مبتديش فيها حل كويس</b>.","باقي الاختيارات غلط: الـ ML بيفيد لما الحلول الحالية محتاجة fine-tuning <b>كتير</b> (مش قليل)، ولفهم المسائل <b>المعقدة</b> (مش السهلة)."),'ml-great-for'),
+M("What is the advantage of training the system incrementally in online learning?",["It requires limited computing resources","It allows for fast and cheap learning","It can learn about new data on the fly","It adapts to changes rapidly"],1,"إيه ميزة تدريب النظام بشكل تدريجي (incrementally) في الـ online learning؟","الإجابة المعتمدة في الشيت: <b>It allows for fast and cheap learning</b> (تعلّم سريع ورخيص).","في كل خطوة تعلّم النظام بياخد بيانات جديدة بس، فمش محتاج يعيد التدريب على كل البيانات من الأول."),
+M("Your system will only be capable of learning if the training data contains enough relevant features and not too many irrelevant ones",["Nonrepresentative Training Data","Poor Quality Data","Irrelevant Features","All of them are true"],2,"النظام مش هيقدر يتعلّم إلا لو بيانات التدريب فيها features مرتبطة كفاية ومفيهاش كتير غير مرتبطة.","ده <b>Irrelevant Features</b>: وجود features كتير مش مفيدة بيصعّب التعلّم، عشان كده بنعمل Feature Engineering."),
+M("Which machine learning technique is commonly used for representing complex, high-dimensional datasets in a clear and insightful diagram?",["Dimensionality reduction techniques","CNNs","RNNs","Transformers"],0,"أي تقنية ML بتُستخدم عادةً لتمثيل بيانات معقدة عالية الأبعاد في رسم واضح ومفيد؟","<b>Dimensionality reduction techniques</b> بتحوّل البيانات لبعدين أو تلاتة عشان نقدر نرسمها ونفهمها (visualization)."),
+M("The ........... is the first ML application that really became mainstream, improving the lives of hundreds of millions of people.",["recommendation system","All of them are true","spam filter","self driving car"],2,"الـ ........... هو أول تطبيق ML بقى مشهور فعلاً وحسّن حياة مئات الملايين من الناس.","ده الـ <b>spam filter</b> (فلتر الرسائل المزعجة)، وهو أول تطبيق ML انتشر بشكل واسع."),
+T("Machine Learning system cannot adapt to new data.",0,"نظام الـ Machine Learning مبيقدرش يتأقلم مع البيانات الجديدة.","العبارة <b>خاطئة</b>. من مميزات الـ ML إنه <b>بيتأقلم</b> مع البيانات الجديدة، وده بيحصل بإعادة التدريب أو بالـ online learning."),
+M("What are instances fed to the system in online learning?",["In large groups","Individually","Randomly","Sequentially"],3,"إزاي بتتغذّى الأمثلة (instances) للنظام في الـ online learning؟","الأمثلة بتتغذّى <b>بشكل متتابع (Sequentially)</b>، إما واحدة واحدة أو في مجموعات صغيرة (mini-batches)."),
+D(M("What is The Most Important Supervised Learning Algorithms?",["k-Nearest Neighbors.","Linear Regression.","Logistic Regression.","All of them are true"],3,"إيه أهم خوارزميات الـ Supervised Learning؟","كلهم خوارزميات supervised مهمة: <code>k-Nearest Neighbors</code> و <code>Linear Regression</code> و <code>Logistic Regression</code>. فالإجابة <b>All of them are true</b>."),'supervised-algos'),
+M("Many robots implement .......... algorithms to learn how to walk.",["unSupervised Learning","Supervised Learning","Semi-Supervised Learning","Reinforcement Learning"],3,"روبوتات كتير بتستخدم خوارزميات .......... عشان تتعلّم تمشي.","<b>Reinforcement Learning</b>: الروبوت بيجرّب ويحصل على مكافأة لما يمشي صح، وبيتعلّم من التجربة."),
+M("It dig into large amounts of data and discover interesting relations between attributes.",["regression task","Dimensionality Reduction","classification","Association Rule Learning"],3,"بيتنقّب في كميات كبيرة من البيانات ويكتشف علاقات مثيرة بين الـ attributes.","ده <b>Association Rule Learning</b>، ومن أشهر خوارزمياته <code>Apriori</code>."),
+D(M("The examples that the system uses to learn are called the ...........",["training set","All of them are true","testing set","accuracy"],0,"الأمثلة اللي النظام بيستخدمها عشان يتعلّم بتتسمى ...........","الأمثلة دي بتتسمى <b>training set</b> (مجموعة التدريب).","الـ testing set بنستخدمها لتقييم النموذج بعد التدريب، والـ accuracy مقياس أداء."),'training-examples'),
+M("Which type of learning relies on a teacher or desired solutions?",["Unsupervised Learning","Semi-supervised Learning","Supervised Learning","Reinforcement Learning"],2,"أي نوع تعلّم بيعتمد على معلّم أو حلول مطلوبة (desired solutions)؟","<b>Supervised Learning</b>: كل مثال معاه الإجابة الصح (label) اللي بتشتغل كمعلّم."),
+M("If spammers keep working around your spam filter, you will need to keep writing new rules forever.",["The Traditional Approach","The Machine Learning Approach","The Deep learning Approach","All of them are true"],0,"لو المرسلين المزعجين فضلوا يلفّوا حوالين فلتر الـ spam بتاعك، هتحتاج تكتب قواعد جديدة للأبد.","ده <b>The Traditional Approach</b>: كل ما المخترقين يغيّروا أسلوبهم لازم نكتب قواعد جديدة بإيدينا.","في الـ ML الفلتر بيتعلّم من البيانات الجديدة تلقائياً."),
+M("One of the solution of overfitting Simplify the model by selecting one with ............. Parameters.",["fewer","any","higher","good"],0,"من حلول الـ overfitting تبسيط النموذج باختيار نموذج بـ ............. معاملات.","نبسّط النموذج باختيار واحد بمعاملات <b>أقل (fewer)</b>."),
+M("It automatically learns which words and phrases are good predictors of spam by detecting unusually frequent patterns of words.",["The Deep learning Approach","The Traditional Approach","All of them are true","The Machine Learning Approach"],3,"بيتعلّم تلقائياً أنهي كلمات وعبارات مؤشرات كويسة للـ spam عن طريق اكتشاف أنماط كلمات متكررة بشكل غير عادي.","ده <b>The Machine Learning Approach</b>: الفلتر بيتعلّم الكلمات المؤشرة للـ spam من البيانات من غير ما نكتبها بإيدينا."),
+T("Underfitting the Training Data It occurs when your model is too simple to learn the underlying structure of the data.",1,"الـ Underfitting بيحصل لما النموذج بسيط زيادة عن اللزوم ومش قادر يتعلّم البنية الأساسية للبيانات.","العبارة <b>صحيحة</b>. ده تعريف الـ underfitting."),
+M("One important parameter of online learning systems is how fast they should adapt to changing data: this is called the",["learning rate","attribute","All of them are true","error rate"],0,"من أهم معاملات أنظمة الـ online learning سرعة تأقلمها مع البيانات المتغيّرة: ده بيتسمى","ده الـ <b>learning rate</b> (معدل التعلّم)."),
+M("Detecting tumors in brain scans is ...............",["text classification","semantic segmentation","image classification","natural language processing"],1,"اكتشاف الأورام في أشعة المخ هو ...............","ده <b>semantic segmentation</b>: كل بكسل في الصورة بيتصنّف (ورم / مش ورم)."),
+M("In Unsupervised Learning Algorithms used to Visualization and dimensionality reduction",["All of them are true","Apriori","One-class SVM","PCA"],3,"في خوارزميات الـ Unsupervised Learning المستخدمة للـ Visualization وتقليل الأبعاد","ده <b>PCA</b> (Principal Component Analysis).","الـ Apriori للـ association rules، والـ One-class SVM لاكتشاف الشذوذ (anomaly detection)."),
+D(M("What is The Most Important Supervised Learning Algorithms?",["k-Nearest Neighbors.","K-Means","Apriori","All of them are true"],0,"إيه أهم خوارزميات الـ Supervised Learning؟","<code>k-Nearest Neighbors</code> من خوارزميات الـ supervised learning المهمة.","الـ K-Means للـ clustering والـ Apriori للـ association rules، وكلاهما unsupervised."),'supervised-algos'),
+T("One of the Solutions for underfitting Feed better features to the learning algorithm.",1,"من حلول الـ underfitting إنك تغذّي الخوارزمية بـ features أفضل.","العبارة <b>صحيحة</b>. تحسين الـ features (Feature Engineering) بيساعد النموذج يتعلّم النمط."),
+M("Automatically classifying news articles is application of .....",["image classification","semantic segmentation","text classification","natural language processing"],3,"تصنيف المقالات الإخبارية تلقائياً هو تطبيق لـ .....","الإجابة المعتمدة في الشيت: <b>natural language processing</b>.","تصنيف المقالات بيندرج تحت NLP، وهو برضه شكل من text classification.")
+];
+
 const app = document.getElementById('app');
 const L = ['A','B','C','D'];
 const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
@@ -694,7 +816,7 @@ const blankify = s => esc(s).replace(/[.…]{3,}/g,'<span class="blank"></span>'
 /* ضيف مواد أو كويزات جديدة هنا */
 const SUBJECTS = [
   {id:'ml', sym:'ML', name:'Machine Learning', ar:'تعلّم الآلة',
-   quizzes:[ {id:'quiz1', title:'quiz 1', questions:Q}, {id:'quiz2', title:'quiz 2', questions:Q2}, {id:'quiz3', title:'quiz 3', questions:Q3}, {id:'quiz4', title:'quiz 4', questions:Q4} ]},
+   quizzes:[ {id:'quiz1', title:'quiz 1', questions:Q}, {id:'quiz2', title:'quiz 2', questions:Q2}, {id:'quiz3', title:'quiz 3', questions:Q3}, {id:'quiz4', title:'quiz 4', questions:Q4}, {id:'quiz5', title:'quiz 5', questions:Q5} ]},
   {id:'net', sym:'NET', name:'Network', ar:'الشبكات',
    quizzes:[ {id:'quiz1', title:'quiz 1', questions:N1}, {id:'quiz2', title:'quiz 2', questions:N2}, {id:'sheet1', kind:'sheet', title:'sheet 1', questions:NSH1}, {id:'sheet2', kind:'sheet', title:'sheet 2', questions:NSH2}, {id:'sheet3', kind:'sheet', title:'sheet 3', questions:NSH3}, {id:'sheet4', kind:'sheet', title:'sheet 4', questions:NSH4}, {id:'sheet5', kind:'sheet', title:'sheet 5', questions:NSH5}, {id:'sheet6', kind:'sheet', title:'sheet 6', questions:NSH6}, {id:'sheet7', kind:'sheet', title:'sheet 7', questions:NSH7} ]},
   {id:'num', sym:'NUM', name:'Numerical', ar:'التحليل العددي', quizzes:[ {id:'sheet1', kind:'sheet', title:'sheet 1', questions:NS1}, {id:'sheet2', kind:'sheet', title:'sheet 2', questions:NS2}, {id:'sheet3', kind:'sheet', title:'sheet 3', questions:NS3} ]},
@@ -706,7 +828,7 @@ const SUBJECTS = [
   SUBJECTS.forEach(s=>{
     const seen=new Set(), all=[];
     s.quizzes.forEach(z=>z.questions.forEach(q=>{
-      const k=norm(q.q)+'|'+norm(q.o[q.a]);
+      const k=q.k||(norm(q.q)+'|'+norm(q.o[q.a]));
       if(!seen.has(k)){seen.add(k);all.push(q);}
     }));
     if(all.length) s.quizzes.unshift({id:'all',all:true,title:'All Questions',questions:all});
@@ -798,7 +920,7 @@ function quiz(){
   const Qs = shuf[key] = shuf[key] || mixQs(shuffled(z.questions), z.all);
   const ans = saved[key] = saved[key] || Array(Qs.length).fill(null);
   let cur=0;
-  let rowMode=false; try{rowMode=localStorage.getItem('dotsRow')==='1'}catch(e){}
+  let rowMode=innerWidth<=600; try{const v=localStorage.getItem('dotsRow'); if(v!==null) rowMode=v==='1';}catch(e){}
   app.innerHTML = bar('← Back') + `<div class="qhead"><div class="qnum" style="margin:0">${s.name}</div><h1 style="margin:2px 0 0;direction:ltr;text-align:left">${z.title}</h1></div>
     <div class="prog"><div class="prog-top"><span id="pScore"></span><button class="dm" id="dotsMode" type="button"></button><span id="pCount"></span></div>
     <div class="track"><div class="fill" id="pFill"></div></div>
