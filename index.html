@@ -203,6 +203,11 @@ html.m .score{font-size:46px}
 
 /* زرار الرجوع لأول الصفحة */
 .opt svg{width:130px;max-width:100%;height:auto;display:block;flex:none}
+.tblw{overflow-x:auto;margin:0 0 14px;direction:ltr}
+.tbl{border-collapse:collapse;width:100%;max-width:420px;font-size:14px;text-align:center}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 10px}
+.tbl th{background:rgba(120,130,150,.15);font-weight:600}
+.tbl tbody tr:nth-child(even){background:rgba(120,130,150,.07)}
 #toTop{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:30;width:46px;height:46px;padding:0;border-radius:50%;
   border:0;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 4px 16px rgba(0,0,0,.3);
   opacity:0;pointer-events:none;transform:translateY(10px);transition:opacity .2s,transform .2s;touch-action:manipulation}
@@ -995,7 +1000,7 @@ M("What are the primary ways of handling splitting based on continuous attribute
 M("How can nominal attributes be split when constructing test conditions for decision trees?",["Only via multi-way splits based on the exact count of unique records.","Either via multi-way splits (using as many partitions as distinct values) or binary splits (dividing values into two subsets).","Only through dynamic discretization ranges.","Strictly through binary splits that preserve strict numeric ordering."],1,"إزاي نقسّم الـ nominal attributes لما نبني test conditions في الـ decision trees؟","بطريقتين: <b>multi-way split</b> (عدد أفرع = عدد القيم المختلفة)، أو <b>binary split</b> (نقسّم القيم لمجموعتين).","الـ nominal مفيهاش ترتيب أصلاً، عشان كده الاختيار الأخير غلط."),
 M("Which of the following is NOT a step in the typical Knowledge Discovery (KDD) process?",["Data Pre-Processing","Data Mining","Initial Data Generation","Post-Processing (Pattern evaluation, visualization)"],2,"أنهي واحد مش خطوة في عملية الـ KDD المعتادة؟","خطوات الـ KDD: <b>Pre-Processing ← Data Mining ← Post-Processing</b>. أما <b>Initial Data Generation</b> فمش جزء منها."),
 M("Which of the following is generally used in finding hidden structure and patterns in a given unlabelled data?",["Supervised learning","Unsupervised learning","Reinforcement learning","None of the above"],1,"أنهي واحد بيُستخدم عادةً لاكتشاف البنية والأنماط المخفية في بيانات من غير labels؟","<b>Unsupervised learning</b>."),
-M("Men classified as men? We have a test dataset of 10 records (Expected → Predicted): 1 Man → Woman, 2 Man → Man, 3 Woman → Woman, 4 Man → Man, 5 Woman → Man, 6 Woman → Woman, 7 Woman → Woman, 8 Man → Man, 9 Man → Woman, 10 Woman → Woman. How many men were classified as men?",["5","2","3","1"],2,"كام راجل اتصنّف صح على إنه راجل؟ (الجدول فيه Expected و Predicted لـ 10 records)","بندوّر على الصفوف اللي <b>Expected = Man و Predicted = Man</b>: الصفوف <b>2 و 4 و 8</b> يعني <b>3</b>.","الصفوف 1 و 9 (Man اتصنفوا Woman) غلط في التصنيف، وده بيتسمى false negative لفئة Man."),
+M("Men classified as men? (see the table below) We have a test dataset of 10 records with expected outcomes and a set of predictions from our classification algorithm.",["5","2","3","1"],2,"كام راجل اتصنّف صح على إنه راجل؟ (الجدول فيه Expected و Predicted لـ 10 records)","بندوّر على الصفوف اللي <b>Expected = Man و Predicted = Man</b>: الصفوف <b>2 و 4 و 8</b> يعني <b>3</b>.","الصفوف 1 و 9 (Man اتصنفوا Woman) غلط في التصنيف، وده بيتسمى false negative لفئة Man."),
 M("The primary use of data cleaning is",["Removing the noisy data","Correction of the data inconsistencies","Transformations for correcting the wrong data","All of the above"],3,"الاستخدام الأساسي لـ data cleaning هو:","كلهم صح: <b>إزالة الـ noisy data</b>، و<b>تصحيح التناقضات</b> في البيانات، و<b>تحويلات لتصحيح البيانات الغلط</b>. فالإجابة <b>All of the above</b>."),
 M("How is the Gain calculated when choosing an attribute test condition to find the best split?",["Gain = M - P","Gain = P + M","Gain = P - M (P is impurity before, M is weighted child impurity)","Gain = P * M"],2,"إزاي بنحسب الـ Gain لما نختار attribute test condition لأحسن split؟","<b>Gain = P − M</b>، حيث P هي الـ impurity <b>قبل</b> الـ split، و M هي متوسط الـ impurity للأبناء (weighted). كل ما الـ gain أكبر الـ split أحسن، لأن الـ impurity بتقل أكتر."),
 M("Which method's goal is to find human-interpretable patterns that describe the data?",["Integration Methods","Prediction Methods","Collection Methods","Description Methods"],3,"أنهي method هدفها إيجاد أنماط يقدر الإنسان يفهمها وبتوصف البيانات؟","<b>Description Methods</b> (الـ descriptive): بتوصف البيانات بأنماط مفهومة، زي الـ clustering والـ association rules.","الـ Prediction Methods بتتوقع قيم أو فئات للمستقبل."),
@@ -1016,6 +1021,8 @@ M("When designing a test condition for an ordinal attribute (e.g., Shirt Size: S
 M("What is the primary principle of Cluster Analysis?",["Maximizing intra-class similarity & minimizing inter-class similarity.","Finding dependency rules between different variables.","Maximizing similarity between different clusters.","Predicting a specific class label based on training data."],0,"إيه المبدأ الأساسي للـ Cluster Analysis؟","بنحاول <b>نزوّد التشابه جوه نفس الـ cluster (intra-class)</b> و<b>نقلّل التشابه بين الـ clusters المختلفة (inter-class)</b>."),
 ];
 
+
+DM2.find(q=>q.q.startsWith('Men classified as men')).tbl='<div class="tblw"><table class="tbl"><thead><tr><th>No#</th><th>Expected</th><th>Predicted</th></tr></thead><tbody><tr><td>1</td><td>Man</td><td>Woman</td></tr><tr><td>2</td><td>Man</td><td>Man</td></tr><tr><td>3</td><td>Woman</td><td>Woman</td></tr><tr><td>4</td><td>Man</td><td>Man</td></tr><tr><td>5</td><td>Woman</td><td>Man</td></tr><tr><td>6</td><td>Woman</td><td>Woman</td></tr><tr><td>7</td><td>Woman</td><td>Woman</td></tr><tr><td>8</td><td>Man</td><td>Man</td></tr><tr><td>9</td><td>Man</td><td>Woman</td></tr><tr><td>10</td><td>Woman</td><td>Woman</td></tr></tbody></table></div>';
 
 /* ضيف مواد أو كويزات جديدة هنا */
 const SUBJECTS = [
@@ -1140,7 +1147,7 @@ function quiz(){
 
   function drawQ(k){
     const q=Qs[k], a=ans[k], done=a!==null;
-    let h=`<div class="qnum">Question ${k+1} / ${Qs.length}</div><p class="qtext">${blankify(q.q)}</p><div class="opts">${q.o.map((t,i)=>{
+    let h=`<div class="qnum">Question ${k+1} / ${Qs.length}</div><p class="qtext">${blankify(q.q)}</p>${q.tbl||''}<div class="opts">${q.o.map((t,i)=>{
       let c='opt'; if(done){ if(i===q.a)c+=' right'; else if(i===a)c+=' wrong'; else c+=' faded'; }
       const m=done?(i===q.a?'<span class="mark">✓ Correct</span>':(i===a?'<span class="mark">✗ Your answer</span>':'')):'';
       return `<button class="${c}" data-k="${k}" data-i="${i}" ${done?'disabled':''}><span class="k">${L[i]}</span><span>${/^<svg/.test(t)?t:esc(t)}</span>${m}</button>`}).join('')}</div>`;
